@@ -1,0 +1,232 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito&family=Open+Sans&family=Poppins:ital,wght@0,400;1,200&family=Rubik:wght@400;800&display=swap');
+
+body{
+  font-family: 'Open Sans', sans-serif;
+}
+
+input{
+  font-family: 'Open Sans', sans-serif;
+  outline: none;
+}
+
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+#loginImage img{
+  position: fixed;
+}
+
+#loginLeft {
+  left: 0;
+  top: 0;
+  height: 100vh;
+}
+
+.logoImage {
+  position: fixed;
+  left: -40px;
+  top: 520px;
+  height: 200px;
+}
+
+#loginBlock{ 
+  position: fixed;
+  left: 960px;
+  top: 200px;
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mainContainer {
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.titleContainer {
+  display: flex;
+  flex-direction: column;
+  font-size: 64px;
+  font-weight: bolder;
+  align-items: center;
+  justify-content: center;
+  color: #3C403F;
+}
+
+.resultContainer, .historyItem { 
+  flex-direction: row;
+  display: flex;
+  width: 400px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.historyContainer {
+  flex-direction: column;
+  display: flex;
+  height: 200px;
+  align-items: center;
+  flex-grow: 5;
+  justify-content: flex-start;
+}
+
+.buttonContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 260px;
+}
+
+input::placeholder {
+  color: #A8B1B3;
+}
+
+input:focus {
+  border-color: #3C403F;
+  border: 2px solid;
+}
+
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.labelContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 350px;
+}
+
+.inputContainer > .errorLabel {
+  color: #A44B22;
+  font-size: 12px;
+  height: 12px;
+}
+
+.inputBox {
+  height: 35px;
+  width: 350px;
+  font-size: large;
+  border-radius: 8px;
+  border: 1px solid #A8B1B3;
+  padding-left: 8px;
+}
+
+.inputBoxSmall {
+  height: 35px;
+  width: 165px;
+  font-size: large;
+  border-radius: 8px;
+  border: 1px solid #A8B1B3;
+  padding-left: 8px;
+}
+
+.inputContainer input.inputButton {
+  color:#A8B1B3;
+  background-color: #D8E2E3;
+  height: 35px;
+  width: 350px;
+  padding: 0px;
+  transition: background-color 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.inputContainer input.inputButton:hover {
+  background-color: #b3c2c4;
+  color: #3C403F;
+}
+
+.inputContainer input.checkbox{
+  background-color: #b3c2c4;
+}
+
+.checkboxLabel {
+  color:#A8B1B3;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.linklabel {
+  color:#A44B22;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+
+.checkboxLabel input.inputCheckBox {
+  accent-color: #b3c2c4;
+}
+
+#greenSection {
+  position: fixed;
+  background-color: #A0ABAC;
+  left: 0;
+  height: 100vh;
+  width: 750px;
+}
+
+#signupBlock{ 
+  position: fixed;
+  left: 960px;
+  top: 200px;
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 400px;
+}
+
+#signInputContainer {
+  display: grid;
+  grid-template-columns: 185px 185px;
+  justify-items: center;
+}
