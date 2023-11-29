@@ -94,6 +94,10 @@ const Login = (props) => {
         setIsChecked(event.target.checked);
     };
 
+    const handleToHomeClick = () => {
+        navigate("/")
+    }
+
     useEffect(() => {
         // Fetch the user email and token from local storage
         const user = JSON.parse(localStorage.getItem("user"))
@@ -122,6 +126,13 @@ const Login = (props) => {
         <div id="loginImage">
             <img src='/login_left.png' id="loginLeft"></img>
             <img src='/wowlogo.png' className="logoImage"></img>
+            
+        </div>
+        <div id="menuBarSection">
+            <button onClick={handleToHomeClick} id="homeButton">
+                <span>WoW</span>
+                <img src='/car.png' width={"40px"}></img>
+            </button>
         </div>
         <div id="loginBlock">
             <div className={"titleContainer"}>
@@ -169,7 +180,7 @@ const Login = (props) => {
             </div>
             <br />
             <br />
-            <label className="checkboxLabel">
+            <label className="label">
                 First time? &nbsp;
                 <a href="/signup" rel="noreferrer" className="linklabel">
                     Sign up

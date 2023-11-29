@@ -10,6 +10,7 @@ const Signup = (props) => {
     const [phone, setPhone] = useState("")
     const [password, setPassword] = useState("")
     const [emailError, setEmailError] = useState("")
+    const [phoneError, setPhoneError] = useState("")
     const [passwordError, setPasswordError] = useState("")
     const [isChecked, setIsChecked] = useState(false);
     
@@ -56,6 +57,7 @@ const Signup = (props) => {
 
         // Set initial error values to empty
         setEmailError("")
+        setPhoneError("")
         setPasswordError("")
 
         // Check if the user has entered both fields correctly
@@ -69,6 +71,16 @@ const Signup = (props) => {
             return
         }
 
+        if ("" === phone) {
+            setPhoneError("Please enter a phone number")
+            return
+        }
+
+        if (phone.length != 10) {
+            setPhoneError("The phone number must be 10 digit")
+            return
+        }
+
         if ("" === password) {
             setPasswordError("Please enter a password")
             return
@@ -78,6 +90,8 @@ const Signup = (props) => {
             setPasswordError("The password must be 8 characters or longer")
             return
         }
+
+
 
         // Authentication calls will be made here...       
         // Check if email has an account associated with it
@@ -96,6 +110,10 @@ const Signup = (props) => {
     const handleCheckboxChange = (event) => {
         setIsChecked(event.target.checked);
     };
+
+    const handleToHomeClick = () => {
+        navigate("/")
+    }
 
     useEffect(() => {
         // Fetch the user email and token from local storage
@@ -125,11 +143,18 @@ const Signup = (props) => {
         <div id="greenSection">
             <img src='/wowlogo.png' className="logoImage"></img>
         </div>
+
+        <div id="menuBarSection">
+            <button onClick={handleToHomeClick} id="homeButton">
+                <span>WoW</span>
+                <img src='/car.png' width={"40px"}></img>
+            </button>
+        </div>
         <div id="signupBlock">
             <div className={"titleContainer"}>
                 <div>Sign Up</div>
             </div>
-            <br /><br />
+            <br /><br /><br />
 
             <div id="signInputContainer">
                 <div className={"inputContainer"}>
@@ -162,7 +187,7 @@ const Signup = (props) => {
                         placeholder="+1 | Phone No."
                         onChange={ev => setPhone(ev.target.value)}
                         className={"inputBox"} />
-                    <label className="errorLabel">{emailError}</label>
+                    <label className="errorLabel">{phoneError}</label>
                 </div>
                 <br />
                 <div className={"inputContainer"} style={{ gridColumn: '1 / 3' }}>
@@ -171,6 +196,9 @@ const Signup = (props) => {
                         placeholder="Password"
                         onChange={ev => setPassword(ev.target.value)}
                         className={"inputBox"} />
+                    <label className="checkboxLabel">
+                        The password must be 8 characters or longer.
+                    </label>
                     <label className="errorLabel">{passwordError}</label>
                 </div>
                 <br />
@@ -179,7 +207,7 @@ const Signup = (props) => {
                         className={"inputButton"}
                         type="button"
                         onClick={onButtonClick}
-                        value={"Login"} />
+                        value={"Sign Up"} />
                 </div>
                 <label className="checkboxLabel" style={{ gridColumn: '1 / 3' }}>
                     Already have an account? &nbsp;

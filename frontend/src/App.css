@@ -1,7 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito&family=Open+Sans&family=Poppins:ital,wght@0,400;1,200&family=Rubik:wght@400;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,500;1,500&display=swap');
 
 body{
   font-family: 'Open Sans', sans-serif;
+  background-color: #F9F9F9;
 }
 
 input{
@@ -48,27 +50,24 @@ input{
   }
 }
 
-#loginImage img{
-  position: fixed;
-}
-
 #loginLeft {
+  position: fixed;
   left: 0;
   top: 0;
-  height: 100vh;
+  height: 100%;
 }
 
 .logoImage {
   position: fixed;
   left: -40px;
-  top: 520px;
+  top: 65%;
   height: 200px;
 }
 
 #loginBlock{ 
   position: fixed;
-  left: 960px;
-  top: 200px;
+  right: 12%;
+  top: 25%;
   flex-direction: column;
   display: flex;
   align-items: center;
@@ -91,6 +90,34 @@ input{
   align-items: center;
   justify-content: center;
   color: #3C403F;
+}
+
+#rentACar {
+  font-size: 40px;
+  align-items: start;
+}
+
+.wowContainer {
+  font-family: 'Ubuntu', sans-serif;
+  font-weight: 500;
+  display: flex;
+  flex-direction: column;
+  font-size: 150px;
+  align-items: start;
+  justify-content: start;
+  color: white;
+  opacity: 95%;
+  position: absolute;
+  left: 7%;
+  top: 20%;
+}
+
+.wowContainer label {
+  margin-block: -30px;
+}
+
+#ofLabel {
+  font-size: 100px;
 }
 
 .resultContainer, .historyItem { 
@@ -174,6 +201,7 @@ input:focus {
   transition: background-color 0.3s ease;
   border: none;
   cursor: pointer;
+  font-size: 18px;
 }
 
 .inputContainer input.inputButton:hover {
@@ -185,12 +213,23 @@ input:focus {
   background-color: #b3c2c4;
 }
 
+.myCheckboxContainer{
+  position: relative;
+}
+
 .checkboxLabel {
   color:#A8B1B3;
   font-size: 13px;
   display: flex;
   align-items: center;
   cursor: pointer;
+}
+
+.label {
+  color:#A8B1B3;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
 }
 
 .linklabel {
@@ -201,7 +240,6 @@ input:focus {
   cursor: pointer;
 }
 
-
 .checkboxLabel input.inputCheckBox {
   accent-color: #b3c2c4;
 }
@@ -211,13 +249,13 @@ input:focus {
   background-color: #A0ABAC;
   left: 0;
   height: 100vh;
-  width: 750px;
+  width: 45%;
 }
 
 #signupBlock{ 
   position: fixed;
-  left: 960px;
-  top: 200px;
+  right: 14%;
+  top: 20%;
   flex-direction: column;
   display: flex;
   align-items: center;
@@ -229,4 +267,410 @@ input:focus {
   display: grid;
   grid-template-columns: 185px 185px;
   justify-items: center;
+}
+
+#homeButton {
+  z-index: 100;
+  border: none;
+  font-size: 20px;
+  background-color: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  
+}
+
+#homeButton span {
+  margin-left: 0px;
+  font-weight: 700;
+}
+
+#homeButton img {
+  margin-left: 0px;
+  transition: margin-left 0.5s ease;
+}
+
+#homeButton:hover img {
+  margin-left: 100px;
+}
+
+#homeImage {
+  position: absolute;
+  z-index: -10;
+  width: 100%;
+  left: 0;
+}
+
+#menuBarSection {
+  position: absolute;
+  z-index: 100;
+  border: none;
+  left: 5%;
+  Top: 5%;
+  display: flex;
+  flex-direction: row;
+  width: 90%;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logSignButton{
+  border: 2px solid #282c34;
+  border-radius: 10px;
+  margin-inline: 10px;
+  height: 40px;
+  width: 150px;
+  font-weight: 400;
+  font-size: 17px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#loginButton {
+  background-color: transparent;
+  color: #282c34;
+}
+
+#loginButton:hover {
+  background-color: #282c34;
+  color: wheat;
+}
+
+#signupButton {
+  background-color: #282c34;
+  color: wheat;
+}
+
+#signupButton:hover {
+  background-color: transparent;
+  color: #282c34;
+}
+
+#accountButton {
+  z-index: 100;
+  border: none;
+  font-size: 20px;
+  background-color: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  
+}
+
+#accountButton img {
+  margin-left: 10px;
+  transition: margin-bottom 0.5s ease;
+}
+
+#accountButton:hover img {
+  margin-bottom: 15px;
+}
+
+#rentSection{
+  position: absolute;
+  background-color: #CCC5B8;
+  height: 520px;
+  width: 460px;
+  right: 2%;
+  top: 25%;
+  border-radius: 10px;
+  padding: 50px 50px 30px 30px;
+}
+
+.checkboxCoantier {
+  position: relative;
+  height: 55px;
+  cursor: default;
+  overflow: hidden;
+  background-color: transparent;
+  border-radius: 3px;
+}
+
+.comboboxBox {
+  width: 100%;
+  height: 100%;
+  border: none;
+  padding-left: 15px;
+  padding-right: 10px;
+  color: #1b1b1b;
+  border-radius: 5px;
+  border: 1px solid #9B958C;
+  font-size: 16px;
+  background-color: transparent;
+}
+
+.comboboxBox:focus {
+  border: 2px solid #1876D2;
+}
+
+.comboboxBox:hover {
+  border: 1px solid #2d2d2d;
+}
+
+.comboboxBox::placeholder {
+  color: #514F49;
+}
+
+.comboboxButton {
+  position: absolute;
+  top: 2px;
+  right: 0;
+  height: 55px;
+  width: 40px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.comboboxoptionbar {
+  position: absolute;
+  top: calc(100% - 15px); 
+  max-height: 200px; 
+  width: 400px;
+  overflow-y: auto;
+  border-radius: 3px;
+  background-color: white;
+  z-index: 10; 
+}
+
+.comboboxoptionNothing{
+  position: absolute;
+  cursor: default;
+  left: 50px;
+  height: 30px;
+  background-color: white;
+  border-radius: 7px;
+}
+
+.comboboxoption {
+  height: 30px;
+}
+
+.comboboxoptionActive{
+  background-color: #cccccc;
+  height: 30px;
+}
+
+.comboboxCheckContainer {
+  position: absolute;
+  left: 0px;
+  height: 30px;
+  width: 40px;
+  background-color: #cccccc;
+}
+
+.comboboxHideDot{
+  position: absolute;
+  left: 0px;
+  height: 30px;
+  width: 40px;
+  background-color: white;
+  border-radius: 10px;
+}
+
+.comboboxItem {
+  position: absolute;
+  left: 40px;
+}
+
+.rentCarInputContainer {
+  position: absolute;
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: 190px 190px;
+  gap: 20px 20px;
+}
+
+.rentCarInputContainer > div {
+  min-height: 30px;
+}
+
+
+.timePickerBox {
+  width: 190px;
+  height: 55px;
+  border-radius: 7px;
+  border: none;
+}
+
+.findButton {
+  border: 2px solid #282c34;
+  width: 400px;
+  height: 40px;
+  border-radius: 8px;
+  background-color: #282c34;
+  color: whitesmoke;
+  font-size: 15px;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.findButton:hover {
+  background-color: transparent;
+  color: #282c34;
+}
+
+.rentService {
+  margin-top: 50px;
+  position: absolute;
+  width: 100%;
+  height: auto;
+  top: 900px;
+  background-color: #1b1b1b;
+  z-index: -20;
+}
+
+.filter_section {
+  position: absolute;
+  top: 13%;
+  left: 13%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  justify-items: space-between;
+  width: 200px;
+}
+
+#filter_title {
+  font-size: 30px;
+  color: #3C403F;
+}
+
+#filter_subtitle {
+  margin-top: 20px;
+  font-size: 20px;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  color: #3C403F;
+}
+
+
+.checkboxes-container {
+  /* Flexbox styles for labels to arrange horizontally */
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+  color: #3C403F;
+}
+
+.checkboxes-container > label {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px;
+  
+}
+
+.filterLine {
+  position: absolute;
+  top: 13%;
+  left: 30%;
+  width: 2px;
+  height: 600px;
+  background-color: #D7D7D7;
+}
+
+.searchSection {
+  position: absolute;
+  right: 13%;
+  top: 13%;
+  height: 600px;
+  width: 800px;
+  z-index: -10;
+  padding-bottom: 100px;
+}
+
+.sortByContainer {
+  position: absolute;
+  right: 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+}
+
+.sortByContainer > label {
+  font-size: 12px;
+}
+
+.searchOptionContainer {
+  position: absolute;
+  margin-top: 60px;
+  margin-bottom: 60px;
+  height: auto;
+  scroll-behavior: auto;
+  width: 100%;
+}
+
+.carInfoContainer {
+  width: 100%;
+  height: 160px;
+  border-radius: 10px;
+  border: 2px solid #D7D7D7;
+  display: flex;
+  align-items: center;
+  justify-items: start;
+  padding: 10px 30px 10px 30px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+#carImage {
+  width: 200px;
+  height: 150px;
+  margin: 15px;
+}
+
+.carInfoSection {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
+  width: 200px;
+  height: 100px;
+}
+
+.dailyRateSection {
+  width: 150px;
+  height: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  justify-content: center;
+  margin-right: 30px;
+}
+
+#fontSize25 {
+  font-size: 25px;
+}
+
+#fontSize15 {
+  font-size: 15px;
+}
+
+.carInfoFontStyle {
+  color: #3C403F;
+}
+
+.selectCarButton {
+  width: 100px;
+  height: 80px;
+  border-radius: 10px;
+  background-color: #CCC5B8;
+  border: none;
+  font-size: 18px;
+  color: #3C403F;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.selectCarButton:hover {
+  color: #F9F9F9;
+  background-color: #3C403F;
 }
