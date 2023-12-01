@@ -882,4 +882,7 @@ input:focus {
   grid-column: 1 / 3;
   grid-row: 3;
 }
-  
+
+#odoInput {
+  width: 100px
+}

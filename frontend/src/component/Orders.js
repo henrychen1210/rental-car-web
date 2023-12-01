@@ -57,7 +57,7 @@ const Orders = ({carInfo}) => {
             <input type="text" placeholder={order.pick_loc}/>
           </label>
           <label className='dataDetail'> Start Odometer: &nbsp;
-            <input type="text" placeholder={order.start_odo}/>
+            <input type="text" id='odoInput' placeholder={order.start_odo}/>
           </label>
         </div>
 
@@ -70,7 +70,7 @@ const Orders = ({carInfo}) => {
             <input type="text" placeholder={order.drop_loc}/>
           </label>
           <label className='dataDetail'> End Odometer: &nbsp;
-            <input type="text" placeholder={order.end_odo}/>
+            <input type="text" id='odoInput' placeholder={order.end_odo}/>
           </label>
         </div>
 
