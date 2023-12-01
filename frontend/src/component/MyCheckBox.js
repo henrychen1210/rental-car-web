@@ -18,9 +18,8 @@ const MyCheckbox = ({options, placeholder, width, onChange }) => {
         )
 
   const handleCheckboxChange = (newValue) => {
-    console.log(newValue);
     setSelected(newValue);
-    onChange(newValue);
+    onChange(options.find(item => item.name === selected));
   };
 
   return (
@@ -31,7 +30,7 @@ const MyCheckbox = ({options, placeholder, width, onChange }) => {
             <Combobox.Input
               className="comboboxBox"
               placeholder={placeholder}
-              displayValue={(option) => option.name}
+              displayValue={(option) => option}
               onChange={(event) => setQuery(event.target.value)}
             />
             <Combobox.Button className="comboboxButton">
@@ -60,18 +59,17 @@ const MyCheckbox = ({options, placeholder, width, onChange }) => {
                     className={({ active }) =>
                       `${active ? 'comboboxoptionActive' : 'comboboxoption'}`
                     }
-                    value={option}
+                    value={option.name}
                   >
                     {({ selected, active }) => (
                       <span>
-                        {selected.id ? (
+                        {selected? (
                           <span className={`${active ? 'comboboxCheckContainer' : 'comboboxHideDot'}`}>
                             <CheckIcon height={"20px"} aria-hidden="true" />
                           </span>
                         ) : 
                           <span className={`${active ? 'comboboxCheckContainer' : 'comboboxHideDot'}`}>
                           </span>}
-
                         <span className='comboboxItem'>
                           {option.name}
                         </span>

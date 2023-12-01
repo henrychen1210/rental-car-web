@@ -128,7 +128,7 @@ const Login = (props) => {
             <img src='/wowlogo.png' className="logoImage"></img>
             
         </div>
-        <div id="menuBarSection">
+        <div className="menuBarSection">
             <button onClick={handleToHomeClick} id="homeButton">
                 <span>WoW</span>
                 <img src='/car.png' width={"40px"}></img>

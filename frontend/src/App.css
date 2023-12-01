@@ -301,7 +301,7 @@ input:focus {
   left: 0;
 }
 
-#menuBarSection {
+.menuBarSection {
   position: absolute;
   z-index: 100;
   border: none;
@@ -346,6 +346,10 @@ input:focus {
   color: #282c34;
 }
 
+.logSignButton > label {
+  cursor: pointer;
+}
+
 #accountButton {
   z-index: 100;
   border: none;
@@ -363,7 +367,7 @@ input:focus {
 }
 
 #accountButton:hover img {
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 #rentSection{
@@ -674,3 +678,208 @@ input:focus {
   color: #F9F9F9;
   background-color: #3C403F;
 }
+
+
+#manageButton {
+  z-index: 100;
+  border: none;
+  font-size: 20px;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  transition: margin-bottom 0.3s ease;
+}
+
+#manageButton:hover {
+  margin-bottom: 20px;
+}
+
+
+#maageMenu {
+  background-color: #9B958C;
+  height: 60px;
+  width: 100%;
+  top: 0px;
+  left: 0px;
+  padding: 40px 80px 40px 80px;
+}
+
+.sideBarContainer {
+  position: absolute;
+  background-color: white;
+  height: 90%;
+  width: 200px;
+  left: 0px;
+  top: 80px;
+  display: flex;
+  flex-direction: column;
+  padding-top: 50px;
+}
+
+.sideBarContainer > button {
+  border: none;
+  font-size: 18px;
+  color: #3C403F;
+  margin: 10px;
+  display: flex;
+  background-color: transparent;
+  margin-left: 40px;
+  cursor: pointer;
+  transition: margin-left 0.3s ease;
+}
+
+.sideBarContainer > button > label {
+  cursor: pointer;
+}
+
+
+.sideBarContainer > button:hover {
+  margin-left: 50px;
+}
+
+.databaseContainer {
+  position: absolute;
+  width: 1100px;
+  height: 670px;
+  top: 120px;
+  left: 20%;
+}
+
+#fontSize {
+  font-size: 40px;
+  position: absolute;
+}
+
+.modifyDatabaseSection {
+  background-color: #ffffff;
+  position: absolute;
+  width: 100%;
+  height: 600px;
+  top: 70px;
+  left: 0px;
+  border-radius: 15px;
+  padding: 10px;
+}
+
+.datasearchSection {
+  width: 20%;
+  height: 95%;
+  margin-top: 15px;
+  border-right: 2px solid #F9F9F9;
+}
+
+.datasearchSection > input {
+  border-radius: 20px;
+  width: 200px;
+  height: 40px;
+  font-size: 14px;
+  padding-inline-start: 10px;
+  border: 1px solid #D7D7D7;
+  color: #3C403F;
+}
+
+.datasearchSection > input:hover {
+  border: 1px solid #3C403F;
+}
+
+.datasearchSection > input:focus {
+  border: 1px solid #3C403F;
+}
+
+
+.datasearchResultSection {
+  width: 100%;
+  height: 95%;
+  display: flex;
+  flex-direction: column;
+  padding-top: 20px;
+  padding-right: 50px;
+  align-items: end;
+  overflow: scroll;
+  scrollbar-width: thin;
+}
+
+.datasearchResultSection::-webkit-scrollbar {
+  display: none;
+}
+
+.datasearchResultSection > button {
+  border: none;
+  background-color: white;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 5px;
+  transition: margin-right 0.5s;
+  display: flex;
+  justify-content: center;
+}
+
+
+.datasearchResultSection > button:hover {
+  margin-right: 10px;
+}
+
+.datasearchResultSection > button > label {
+  cursor: pointer;
+}
+
+.orderInfoContainer {
+  width: 75%;
+  height: 95%;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  color: #3C403F;
+  
+}
+
+.datatitle {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 25px;
+}
+
+.orderDetailContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  margin-top: 130px;
+  gap: 20px;
+  justify-items: start;
+  align-items: start;
+}
+
+.fontSize20 {
+  font-size: 20px;
+  position: relative;
+}
+
+.dataContainer {
+  text-align: left;
+}
+
+.dataDetail {
+  margin-top: 5px;
+  color: #8F8F8F;
+  display: block;
+  width: 100%;
+  
+}
+
+.dataDetail > input {
+  border: none;
+  font-size: 16px;
+  width: auto;
+}
+
+
+.dataDetail > input::placeholder {
+  color: #3C403F;
+  font-size: 16px;
+}
+
+#paymentSection {
+  grid-column: 1 / 3;
+  grid-row: 3;
+}
+  

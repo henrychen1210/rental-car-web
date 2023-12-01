@@ -10,7 +10,7 @@ import SearchResult from "./component/SearchResult.js";
 
 
 const Home = (props) => {
-    const { loggedIn, email } = props
+    const { loggedIn, employee, email } = props
     const navigate = useNavigate();
     const [name, setName] = useState("Henry") // set temparary name
     const [pickUpLocation, setPickUpLocation] = useState("")
@@ -35,7 +35,7 @@ const Home = (props) => {
     const [carList, setVarList] = useState([])
 
 
-    const people = [
+    const location = [
         { id: 1, name: 'New York' },
         { id: 2, name: 'Boston' },
         { id: 3, name: 'Chicago' },
@@ -81,27 +81,28 @@ const Home = (props) => {
         navigate("/login")
     }
 
+    const handleToManageClick = () => {
+        navigate("/manage")
+    }
+
     const findButtonClick = () => {
-        console.log(pickUpLocation.name)
+        console.log(pickUpLocation)
         console.log(pickUpDate.$d)
         console.log(pickUpTime.$H + ":" + pickUpTime.$m)
-        console.log(dropOffLocaction.name)
+        console.log(dropOffLocaction)
         console.log(dropOffDate.$d)
         console.log(dropOffTime.$H + ":" + dropOffTime.$m)
-        
     }
 
     const handleSortByClick = (newValue) => {
-        setSortBy(() => {
-            console.log(newValue.value);
-            return newValue;
-        });
+        setSortBy(newValue)
+        console.log(sortBy)
     }
 
 
     return <div className="mainContainer">
         <img src='/home_image_1.png' id="homeImage"></img>
-        <div id="menuBarSection">
+        <div className="menuBarSection">
             <button onClick={handleToHomeClick} id="homeButton">
                 <span>WoW</span>
                 <img src='/car.png' width={"40px"}></img>
@@ -118,12 +119,20 @@ const Home = (props) => {
                 </button>
             </div>)}
 
-            {(loggedIn && <div id="accountButtonSection">
+            {(loggedIn && !employee && <div id="accountButtonSection">
                 <button onClick={handleToSignupClick} id="accountButton">
                     <label >Hi, {name}</label>
                     <img src='/account.png' width={"30px"}></img>
                 </button>
             </div>)}
+
+            {(loggedIn && employee && <div id="accountButtonSection">
+                <button onClick={handleToManageClick} id="accountButton">
+                    <label >Hi, {name}</label>
+                    <img src='/account.png' width={"30px"}></img>
+                </button>
+            </div>)}
+
 
         </div>
 
@@ -141,11 +150,11 @@ const Home = (props) => {
             <div className="rentCarInputContainer">
 
                 <div className=""  style={{ gridColumn: '1 / 3' }}>
-                    <MyCheckbox options={people} placeholder={"Pick up Location"} width={"400px"} onChange={(newValue) => setPickUpLocation(newValue)}/>
+                    <MyCheckbox options={location} placeholder={"Pick up Location"} width={"400px"} onChange={(newValue) => setPickUpLocation(newValue)}/>
                 </div>
 
                 <div className=""  style={{ gridColumn: '1 / 3' }}>
-                    <MyCheckbox options={people} placeholder={"Drop off Location"} width={"400px"} onChange={(newValue) => setDropOffLocaction(newValue)}/>
+                    <MyCheckbox options={location} placeholder={"Drop off Location"} width={"400px"} onChange={(newValue) => setDropOffLocaction(newValue)}/>
                 </div>
 
                 <div className=""  style={{ gridColumn: '1' }}>
