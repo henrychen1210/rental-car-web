@@ -13,27 +13,29 @@ const Home = (props) => {
     const { loggedIn, employee, email } = props
     const navigate = useNavigate();
     const [name, setName] = useState("Henry") // set temparary name
+
     const [pickUpLocation, setPickUpLocation] = useState("")
     const [pickUpDate, setPickUpDate] = useState("")
-    const [pickUpTime, setPickUpTime] = useState("")
+    const [pickUpTime, setPickUpTime] = useState(new Date())
     const [dropOffLocaction, setDropOffLocaction] = useState("")
     const [dropOffDate, setDropOffDate] = useState("")
-    const [dropOffTime, setDropOffTime] = useState("")
-    const [checkedEconomy, setCheckedEconomy] = useState(false)
-    const [checkedCompact, setCheckedCompact] = useState(false)
-    const [checkedMidsize, setCheckedMidsize] = useState(false)
-    const [checkedStanderd, setCheckedStanderd] = useState(false)
-    const [checkedFullSize, setCheckedFullSize] = useState(false)
-    const [checkedPremium, setCheckedPremium] = useState(false)
-    const [checkedLuxury, setCheckedLuxury] = useState(false)
-    const [checkedMinivan, setCheckedMinivan] = useState(false)
-    const [checkedSUV, setCheckedSUV] = useState(false)
-    const [checkedOther, setCheckedOther] = useState(false)
-    const [checked2to5seats, setChecked2to5seats] = useState(false)
-    const [checked6seats, setChecked6seats] = useState(false)
+    const [dropOffTime, setDropOffTime] = useState(new Date())
     const [sortBy, setSortBy] = useState("Recommend")
     const [carList, setVarList] = useState([])
 
+    const [isCheckOut, setIsCheckOut] = useState(false)
+    const [selectCar, setSelectCar] = useState("")
+
+    const [payment, setPayment] = useState({
+        paymentID: '',
+        pmt_date: '',
+        pmt_method: '',
+        start_odo: '',
+        car_num: '',
+        paid_amt: '',
+        invID: '',
+    });
+    
 
     const location = [
         { id: 1, name: 'New York' },
@@ -45,18 +47,10 @@ const Home = (props) => {
     ]
 
     const carInfoList = [
-        { id: 1, model: 'Kia Forte', capacity: 5, location: 'New York', dailyRate: 120.00},
-        { id: 2, model: 'Honda CR-V', capacity: 5, location: 'Boston', dailyRate: 150.00},
-        { id: 3, model: 'Toyota Prius', capacity: 5, location: 'Chicago', dailyRate: 115.50},
-        { id: 4, model: 'Honda Civic', capacity: 5, location: 'Columbus', dailyRate: 105.00},
-        { id: 1, model: 'Kia Forte', capacity: 5, location: 'New York', dailyRate: 120.00},
-        { id: 2, model: 'Honda CR-V', capacity: 5, location: 'Boston', dailyRate: 150.00},
-        { id: 3, model: 'Toyota Prius', capacity: 5, location: 'Chicago', dailyRate: 115.50},
-        { id: 4, model: 'Honda Civic', capacity: 5, location: 'Columbus', dailyRate: 105.00},
-        { id: 1, model: 'Kia Forte', capacity: 5, location: 'New York', dailyRate: 120.00},
-        { id: 2, model: 'Honda CR-V', capacity: 5, location: 'Boston', dailyRate: 150.00},
-        { id: 3, model: 'Toyota Prius', capacity: 5, location: 'Chicago', dailyRate: 115.50},
-        { id: 4, model: 'Honda Civic', capacity: 5, location: 'Columbus', dailyRate: 105.00},
+        { vin: 1, make: 'Kia', model: 'Forte', capacity: 5, location: 'New York', dailyRate: 120.00},
+        { vin: 2, make: 'Honda', model: 'CR-V', capacity: 5, location: 'Boston', dailyRate: 150.00},
+        { vin: 3, make: 'Toyota',  model: 'Prius', capacity: 5, location: 'Chicago', dailyRate: 115.50},
+        { vin: 4, make: 'Honda', model: 'Civic', capacity: 5, location: 'Columbus', dailyRate: 105.00},
     ]
     
     const onButtonClick = () => {
@@ -92,6 +86,9 @@ const Home = (props) => {
         console.log(dropOffLocaction)
         console.log(dropOffDate.$d)
         console.log(dropOffTime.$H + ":" + dropOffTime.$m)
+
+        console.log(pickUpDate.getMonth() + "/" + pickUpDate.getDate() + "/" + pickUpDate.getFullYear())
+        console.log(dropOffTime.getHours() + ":" + dropOffTime.getMinutes())
     }
 
     const handleSortByClick = (newValue) => {
@@ -99,6 +96,18 @@ const Home = (props) => {
         console.log(sortBy)
     }
 
+    const handlePaymentInputChange = (e) => {
+        const { name, value } = e.target;
+        setPayment({ ...payment, [name]: value });
+      };
+      
+    const placeTheOrderClick = () => {
+
+    }
+
+    const useCouponClick = () => {
+
+    }
 
     return <div className="mainContainer">
         <img src='/home_image_1.png' id="homeImage"></img>
@@ -161,7 +170,7 @@ const Home = (props) => {
                     <LocalizationProvider dateAdapter={AdapterDayjs} className="inputTimeBox">           
                         <DatePicker 
                             label="Pick Up Date"
-                            onChange={(newValue) => setPickUpDate(newValue)}
+                            onChange={(newValue) => setPickUpDate(new Date(newValue))}
                             className="timePickerBox"
                         />
                     </LocalizationProvider>
@@ -171,7 +180,7 @@ const Home = (props) => {
                     <LocalizationProvider dateAdapter={AdapterDayjs}>           
                         <TimePicker 
                             label="Pick Up Time"
-                            onChange={(newValue) => setPickUpTime(newValue)}
+                            onChange={(newValue) => setPickUpTime(new Date(newValue))}
                             className="timePickerBox"
                         />
                     </LocalizationProvider>
@@ -181,7 +190,7 @@ const Home = (props) => {
                     <LocalizationProvider dateAdapter={AdapterDayjs}>           
                         <DatePicker 
                             label="Drop Off Date"
-                            onChange={(newValue) => setDropOffDate(newValue)}
+                            onChange={(newValue) => setDropOffDate(new Date(newValue))}
                             className="timePickerBox"
                         />
                     </LocalizationProvider>
@@ -191,7 +200,7 @@ const Home = (props) => {
                     <LocalizationProvider dateAdapter={AdapterDayjs}>           
                         <TimePicker 
                             label="Drop off time"
-                            onChange={(newValue) => setDropOffTime(newValue)}
+                            onChange={(newValue) => setDropOffTime(new Date(newValue))}
                             className="timePickerBox"
                         />
                     </LocalizationProvider>
@@ -207,153 +216,102 @@ const Home = (props) => {
         </div>
 
         <div className="rentService">
+            
 
-            <div className="filter_section">
-                <label className="titleContainer" id="filter_title">Filter by</label>
-
-                <label className="titleContainer" id="filter_subtitle">
-                    <label>Type</label>
-                    <label>From</label>
-                </label>
-
-
-                <div className="checkboxes-container">
-                    <label>
-                        <label>
-                            <input type="checkbox" checked={checkedEconomy} onChange={() => setCheckedEconomy(!checkedEconomy)}/>
-                            &nbsp;
-                            Economy
-                        </label> 
-                        <label>$70</label>
-                    </label>
-
-                    <label>
-                        <label>
-                            <input type="checkbox" checked={checkedCompact} onChange={() => setCheckedCompact(!checkedCompact)}/>
-                            &nbsp;
-                            Compact
-                        </label> 
-                        <label>$72</label>
-                    </label>
-
-                    <label>
-                        <label>
-                            <input type="checkbox" checked={checkedMidsize} onChange={() => setCheckedMidsize(!checkedMidsize)}/>
-                            &nbsp;
-                            Midsize
-                        </label> 
-                        <label>$74</label>
-                    </label>
-
-                    <label>
-                        <label>
-                            <input type="checkbox" checked={checkedStanderd} onChange={() => setCheckedStanderd(!checkedStanderd)}/>
-                            &nbsp;
-                            Standard
-                        </label> 
-                        <label>$79</label>
-                    </label>
-
-                    <label>
-                        <label>
-                            <input type="checkbox" checked={checkedFullSize} onChange={() => setCheckedFullSize(!checkedFullSize)}/>
-                            &nbsp;
-                            Full-size
-                        </label> 
-                        <label>$79</label>
-                    </label>
-
-                    <label>
-                        <label>
-                            <input type="checkbox" checked={checkedPremium} onChange={() => setCheckedPremium(!checkedPremium)}/>
-                            &nbsp;
-                            Premium
-                        </label> 
-                        <label>$90</label>
-                    </label>
-
-                    <label>
-                        <label>
-                            <input type="checkbox" checked={checkedLuxury} onChange={() => setCheckedLuxury(!checkedLuxury)}/>
-                            &nbsp;
-                            Luxury
-                        </label> 
-                        <label>$94</label>
-                    </label>
-
-                    <label>
-                        <label>
-                            <input type="checkbox" checked={checkedMinivan} onChange={() => setCheckedMinivan(!checkedMinivan)}/>
-                            &nbsp;
-                            Minivan
-                        </label> 
-                        <label>$179</label>
-                    </label>
-
-                    <label>
-                        <label>
-                            <input type="checkbox" checked={checkedSUV} onChange={() => setCheckedSUV(!checkedSUV)}/>
-                            &nbsp;
-                            SUV
-                        </label> 
-                        <label>$81</label>
-                    </label>
-
-                    <label>
-                        <label>
-                            <input type="checkbox" checked={checkedOther} onChange={() => setCheckedOther(!checkedOther)}/>
-                            &nbsp;
-                            Other
-                        </label> 
-                        <label>$81</label>
-                    </label>
-
-                </div>
-
-                <label className="titleContainer" id="filter_subtitle">
-                    <label>Capacity</label>
-                    <label>From</label>
-                </label>
-
-                <div className="checkboxes-container">
-
-                    <label>
-                        <label>
-                            <input type="checkbox" checked={checked2to5seats} onChange={() => setChecked2to5seats(!checked2to5seats)}/>
-                            &nbsp;
-                            2-5 seats
-                        </label> 
-                        <label>$70</label>
-                    </label>
-
-                    <label>
-                        <label>
-                            <input type="checkbox" checked={checked6seats} onChange={() => setChecked6seats(!checked6seats)}/>
-                            &nbsp;
-                            6+ seats
-                        </label> 
-                        <label>$108</label>
-                    </label>
-
-                </div>
-                
-            </div>
-
-            <div className="filterLine"></div>
-
-            <div className="searchSection">
+            {!isCheckOut && <div className="searchSection">
+                {/* A JSX comment 
                 <div className="sortByContainer">
                     <label>Sort By</label>
                     <SortByCheckBox onChange={handleSortByClick}></SortByCheckBox>
                 </div>
+                */}
 
                 <div className='searchOptionContainer'>
                     {carInfoList.map((car) =>{
-                        return <SearchResult carInfo={car}></SearchResult>
+                        return <SearchResult carInfo={car} setIsCheckOut={setIsCheckOut} setSelectCar={setSelectCar}></SearchResult>
                     })}
                 </div>
 
+            </div>}
+
+            {isCheckOut && <div className="searchSection">
+                <button className="backToSearchButton" onClick={() => setIsCheckOut(false)}>
+                    <img src='/left.png' width={"40px"}></img>
+                </button>
+
+                <div className="checkoutSection">
+                    <img src={`/${selectCar.model}.png`} id="carImage"></img>
+                    
+                    <div className="checkOutInfoContainer">
+                        <label className="modelName">{selectCar.make} {selectCar.model}</label>
+                        
+                        <label> 
+                            {pickUpLocation.name} {pickUpDate.toLocaleString('En', { month: 'short' })} {pickUpDate.getDate()} {pickUpDate.getFullYear()} {`${String(pickUpTime.getHours()).padStart(2, '0')}:${String(pickUpTime.getMinutes()).padStart(2, '0')}`}
+                            <img src={"/up_cal.png"} id="checkOutIcon"></img>
+                        </label>
+                        
+                        <label>
+                            {dropOffLocaction.name} {dropOffDate.toLocaleString('En', { month: 'short' })} {dropOffDate.getDate()} {dropOffDate.getFullYear()} {`${String(dropOffTime.getHours()).padStart(2, '0')}:${String(dropOffTime.getMinutes()).padStart(2, '0')}`}
+                            <img src={"/down_cal.png"} id="checkOutIcon"></img>
+                        </label>
+                    </div>
+
+                    
+                </div>
+
+                <div className="checkoutSection">
+                    <label className="modelName">Total Cost</label>
+                    
+                    <div className="checkOutInfoContainer">
+                        <br/>
+                        <label> 
+                            Daily rate &nbsp; ${selectCar.dailyRate.toFixed(2)} &nbsp; x &nbsp; {(dropOffDate.getDate() - pickUpDate.getDate())}  &nbsp; = &nbsp; ${(((dropOffDate.getDate() - pickUpDate.getDate())) * selectCar.dailyRate).toFixed(2)}
+                        </label>
+
+                        <div onSubmit="" className="checkOutForm">
+                            <label className='checkOutFormSubtitle'> Coupon: &nbsp;
+                                <input type="text" name="card_num" onChange=""/>
+                            </label>
+                            <button  className='submitButton' onClick={useCouponClick}>
+                                Use Coupon
+                            </button> 
+                        </div>
+
+                    </div>
+                </div>
+
+                <div className="checkoutSection">
+                    <label className="modelName">Payment</label>
+
+                    <div className="checkOutInfoContainer">
+                        <br/>
+                        <div className="checkOutForm">
+                            <label className='checkOutFormSubtitle'> Card Number: &nbsp;
+                                <input type="text" name="card_num" onChange={handlePaymentInputChange}/>
+                            </label>
+
+                            <label className='checkOutFormSubtitle'> EXP Date: &nbsp;
+                                <input type="text"/>
+                            </label>
+
+                            <label className='checkOutFormSubtitle'> CVV: &nbsp;
+                                <input type="text"/>
+                            </label>
+
+                            <label className='checkOutFormSubtitle'> Name on Card: &nbsp;
+                                <input type="text"/>
+                            </label>
+                            <button className='submitButton' onClick={placeTheOrderClick}>
+                                Place this Order
+                            </button> 
+                        </div>
+                    </div>
+
+                    
+                </div>
             </div>
+
+            }
 
 
         </div>

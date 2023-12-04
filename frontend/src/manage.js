@@ -27,7 +27,7 @@ const Manage = (props) => {
     }
 
 
-    const carInfo = [
+    const orderInfo = [
         {orderID: '10001', pick_date: '2023-12-01', drop_date: '2023-12-3', start_odo: '562014', end_odo: '927432', pick_loc: 'New York', drop_loc: 'Boston', customer_id: '99823', vin: 'JJJJJJ87621'},
         {orderID: '10002', pick_date: '2023-12-01', drop_date: '2023-12-3', start_odo: '562014', end_odo: '927432', pick_loc: 'New York', drop_loc: 'Boston', customer_id: '99823', vin: 'JJJJJJ87621'},
         {orderID: '10003', pick_date: '2023-12-01', drop_date: '2023-12-3', start_odo: '562014', end_odo: '927432', pick_loc: 'New York', drop_loc: 'Boston', customer_id: '99823', vin: 'JJJJJJ87621'},
@@ -63,13 +63,10 @@ const Manage = (props) => {
         </div>
 
         <div className="databaseContainer">
-            {selected == "orders" && <Order carInfo={carInfo}></Order>}
+            {selected == "orders" && <Order></Order>}
             {selected == "vehicles" && <Vehicles></Vehicles>}
             {selected == "accounts" && <Accounts></Accounts>}
-
-            
         </div>
-
     </div>
 }
 

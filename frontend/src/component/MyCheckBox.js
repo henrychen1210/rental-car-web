@@ -19,7 +19,7 @@ const MyCheckbox = ({options, placeholder, width, onChange }) => {
 
   const handleCheckboxChange = (newValue) => {
     setSelected(newValue);
-    onChange(options.find(item => item.name === selected));
+    onChange(options.find(item => item.name === newValue));
   };
 
   return (

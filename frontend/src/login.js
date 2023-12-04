@@ -8,7 +8,7 @@ const Login = (props) => {
     const [password, setPassword] = useState("")
     const [emailError, setEmailError] = useState("")
     const [passwordError, setPasswordError] = useState("")
-    const [isChecked, setIsChecked] = useState(false);
+    const [isEmployeeChecked, setIsEmployeeChecked] = useState(false);
     
     const navigate = useNavigate();
 
@@ -76,22 +76,30 @@ const Login = (props) => {
             return
         }
 
-        // Authentication calls will be made here...       
-        // Check if email has an account associated with it
-        checkAccountExists(accountExists => {
-            // If yes, log in 
-            if (accountExists)
-                logIn()
-            else
-            // Else, ask user if they want to create a new account and if yes, then log in
-                if (window.confirm("An account does not exist with this email address: " + email + ". Do you want to create a new account?")) {
+        if (isEmployeeChecked) {
+            // lgo in as employee
+            console.log("employee login!!!")
+        }
+        else {
+            // Authentication calls will be made here...       
+            // Check if email has an account associated with it
+            checkAccountExists(accountExists => {
+                // If yes, log in 
+                if (accountExists)
                     logIn()
-                }
-        })  
+                else
+                // Else, ask user if they want to create a new account and if yes, then log in
+                    if (window.confirm("An account does not exist with this email address: " + email + ". Do you want to create a new account?")) {
+                        logIn()
+                    }
+            })  
+        }
+        
+        
     }
 
     const handleCheckboxChange = (event) => {
-        setIsChecked(event.target.checked);
+        setIsEmployeeChecked(event.target.checked);
     };
 
     const handleToHomeClick = () => {
@@ -170,8 +178,8 @@ const Login = (props) => {
                         className={"inputCheckBox"}
                         type="checkbox"
                         onChange={handleCheckboxChange}
-                        value={"111"} />
-                    Remember me
+                    />
+                    I am Employee
                 </label>
                 <a href="" rel="noreferrer" className="checkboxLabel">
                     <img src='/lock.png' width={"20px"}></img>

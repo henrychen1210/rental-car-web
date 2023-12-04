@@ -1,102 +1,287 @@
-const express = require("express")
-const bcrypt = require("bcrypt")
-var cors = require('cors')
-const jwt = require("jsonwebtoken")
-var low = require("lowdb");
-var FileSync = require("lowdb/adapters/FileSync");
-var adapter = new FileSync("./database.json");
-var db = low(adapter);
+const express = require('express');
+const bodyParser = require('body-parser');
+const path = require('path');
 
-// Initialize Express app
-const app = express()
+const app = express();
+const port = 3000;
 
-// Define a JWT secret key. This should be isolated by using env variables for security
-const jwtSecretKey = "dsfdsfsdfdsvcsvdfgefg"
+var mysql = require('mysql');
 
-// Set up CORS and JSON middlewares
-app.use(cors())
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+var db_config = {
+    host: 'localhost',
+    user: 'root',
+    password: 'root',
+    port: '8889',
+    database: 'test'
+};
 
-// Basic home route for the API
-app.get("/", (_req, res) => {
-    res.send("Auth API.\nPlease use POST /auth & POST /verify for authentication")
-})
+var connection;
 
-// The auth endpoint that creates a new user record or logs a user based on an existing record
-app.post("/auth", (req, res) => {
-    
+function handleDisconnect() {
+    connection = mysql.createConnection(db_config); // Recreate the connection, since
+    // the old one cannot be reused.
+
+    connection.connect(function (err) {              // The server is either down
+        if (err) {                                     // or restarting (takes a while sometimes).
+            console.log('error when connecting to db:', err);
+            setTimeout(handleDisconnect, 2000); // We introduce a delay before attempting to reconnect,
+        }                                     // to avoid a hot loop, and to allow our node script to
+    });                                     // process asynchronous requests in the meantime.
+    // If you're also serving http, display a 503 error.
+    connection.on('error', function (err) {
+        console.log('db error', err);
+        if (err.code === 'PROTOCOL_CONNECTION_LOST') { // Connection to the MySQL server is usually
+            handleDisconnect();                         // lost due to either server restart, or a
+        } else {                                      // connnection idle timeout (the wait_timeout
+            throw err;                                  // server variable configures this)
+        }
+    });
+}
+
+handleDisconnect();
+
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.listen(port, () => {
+    console.log(`App running at http://localhost:${port}`);
+});
+
+
+
+app.post('/login', (req, res) => {
     const { email, password } = req.body;
+    const sql = 'SELECT * FROM customer WHERE cu_email = ? AND password = ?';
+    var params = [email, password];
 
-    // Look up the user entry in the database
-    const user = db.get("users").value().filter(user => email === user.email)
+    connection.query(sql, params, function (err, result) {
+        if (err) {
+            console.log('[SELECT ERROR] - ', err.message);
+            res.send("Error login");
+        }
 
-    // If found, compare the hashed passwords and generate the JWT token for the user
-    if (user.length === 1) {
-        bcrypt.compare(password, user[0].password, function (_err, result) {
-            if (!result) {
-                return res.status(401).json({ message: "Invalid password" });
-            } else {
-                let loginData = {
-                    email,
-                    signInTime: Date.now(),
-                };
+        console.log(result);
+        if (rows.length > 0) {
+            res.status(200).send('login sucessfully!');
+        } else {
+            res.status(500).send('Email or password is wrong')
+        }
+    });
 
-                const token = jwt.sign(loginData, jwtSecretKey);
-                res.status(200).json({ message: "success", token });
-            }
-        });
-    // If no user is found, hash the given password and create a new entry in the auth db with the email and hashed password
-    } else if (user.length === 0) {
-        bcrypt.hash(password, 10, function (_err, hash) {
-            console.log({ email, password: hash })
-            db.get("users").push({ email, password: hash }).write()
+});
 
-            let loginData = {
-                email,
-                signInTime: Date.now(),
-            };
+app.post('/register', (req, res) => {
+    const { email, phonenumber, username, password } = req.body;
+    const sql = 'INSERT INTO customer (cu_email, cu_name, cu_phone, password) VALUES (?, ?, ?, ?)';
+    var params = [email, username, phonenumber, password];
 
-            const token = jwt.sign(loginData, jwtSecretKey);
-            res.status(200).json({ message: "success", token });
-        });
+    connection.query(sql, params, function (err, result) {
+        if (err) {
+            console.log('[SELECT ERROR] - ', err.message);
+            res.send("Error register");
+        }
 
-    }
-})
+        console.log(result);
+        res.status(200).send('register sucessfully!');
+    });
+});
 
-// The verify endpoint that checks if a given JWT token is valid
-app.post('/verify', (req, res) => {
-    const tokenHeaderKey = "jwt-token";
-    const authToken = req.headers[tokenHeaderKey];
-    try {
-      const verified = jwt.verify(authToken, jwtSecretKey);
-      if (verified) {
-        return res
-          .status(200)
-          .json({ status: "logged in", message: "success" });
-      } else {
-        // Access Denied
-        return res.status(401).json({ status: "invalid auth", message: "error" });
-      }
-    } catch (error) {
-      // Access Denied
-      return res.status(401).json({ status: "invalid auth", message: "error" });
-    }
-})
+// get all vehicles
+app.get('/vehicles', (req, res) => {
 
-// An endpoint to see if there's an existing account for a given email address
-app.post('/check-account', (req, res) => {
-    const { email } = req.body
+    var sql = 'SELECT * FROM vehicle v, v_class c WHERE v.class_id = c.class_id';
 
-    console.log(req.body)
+    connection.query(sql, function (err, result) {
+        if (err) {
+            console.log('[SELECT ERROR] - ', err.message);
+            res.status(500).send("Error register");
+        }
+        console.log(result);
+        res.status(200).send(result)
+    })
 
-    const user = db.get("users").value().filter(user => email === user.email)
+});
 
-    console.log(user)
-    
-    res.status(200).json({
-        status: user.length === 1 ? "User exists" : "User does not exist", userExists: user.length === 1
+// search vehicle
+app.post('/searchvehicle', (req, res) => {
+    const { model, make } = req.body;
+
+    var sql = 'SELECT * FROM vehicle where model = ? AND make = ?';
+    var params = [model, make];
+
+    connection.query(sql, function (err, result) {
+        if (err) {
+            console.log('[SELECT ERROR] - ', err.message);
+            res.status(500).send("Error register");
+        }
+        console.log(result);
+        res.status(200).send(result)
     })
 })
 
-app.listen(3080)
+
+// add vehicle
+app.post('/vehicles', (req, res) => {
+    const {vin, make, model, year, plate, class_id} = req.body;
+
+    var sql = 'INSERT INTO vehicle (vin, make, model, year, plate, class_id) VALUES (?, ?, ?, ?, ?, ?)';
+    var params = [vin, make, model, year, plate, class_id];
+
+    connection.query(sql, params, function (err, result) {
+        if (err) {
+            console.log('[INSERT ERROR] - ', err.message);
+            res.send("Error add vehicle");
+        }
+
+        console.log(result);
+        res.status(200).send('add vehicle sucessfully!');
+    });
+})
+
+// delete a vehicle
+app.delete('/vehicles', (req, res) => {
+    const {vin} = req.body;
+    
+    var sql = 'DELETE FROM vehicle WHERE vin = ?';
+    var params = [vin];
+
+    connection.query(sql, params, function (err, result) {
+        if (err) {
+            console.log('[DELETE ERROR] - ', err.message);
+            res.send("Error delete vehicle");
+        }
+
+        console.log(result);
+        res.status(200).send('delete vehicle sucessfully!');
+    });
+})
+
+// get all rentals
+app.get('/rentals', (req, res) => {
+    var sql = 'SELECT * FROM rental r, customer c WHERE r.customer_id = c.customer_id';
+
+    connection.query(sql, function (err, result) {
+        if (err) {
+            console.log('[SELECT ERROR] - ', err.message);
+            res.status(500).send("Error get rentals");
+        }
+        console.log(result);
+        res.status(200).send(result)
+    })
+})
+
+// get rental by customerid
+app.post('/getRentalsByCustomer', (req, res) => {
+    const {customerid} = req.body;
+
+    var sql = 'SELECT * FROM rental WHERE customer_id = ?';
+    var params = [customerid]
+
+    connection.query(sql, params, function (err, result) {
+        if (err) {
+            console.log('[GET ERROR] - ', err.message);
+            res.send("Error get vehicle");
+        }
+
+        console.log(result);
+        res.status(200).send(result);
+    });
+})
+
+// add rental
+app.post('/rentals', (req, res) => {
+    const {pick_date, drop_date, start_odo, end_odo, pick_loc, drop_loc, customer_id, vin} = req.body;
+    var sql = 'INSERT INTO rental (pick_date, drop_date, start_odo, end_odo, pick_loc, drop_loc, customer_id, vin) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+    var params = [pick_date, drop_date, start_odo, end_odo, pick_loc, drop_loc, customer_id, vin];
+
+    connection.query(sql, params, function (err, result) {
+        if (err) {
+            console.log('[INSERT ERROR] - ', err.message);
+            res.send("Error add rentals");
+        }
+
+        console.log(result);
+        res.status(200).send('add rental sucessfully!');
+    });
+})
+
+// delete a rental
+app.delete('/rentals', (req, res) => {
+    const {rental_id} = req.body;
+
+    var sql = 'DELETE FROM rental WHERE rental_id = ?';
+    var params = [rental_id];
+
+    connection.query(sql, params, function (err, result) {
+        if (err) {
+            console.log('[DELETE ERROR] - ', err.message);
+            res.send("Error rental vehicle");
+        }
+
+        console.log(result);
+        res.status(200).send('delete rental sucessfully!');
+    });
+})
+
+// get all locations
+app.get('/locations', (req, res) => {
+    var sql = 'SELECT * FROM location';
+
+    connection.query(sql, function (err, result) {
+        if (err) {
+            console.log('[SELECT ERROR] - ', err.message);
+            res.status(500).send("Error get locations");
+        }
+        console.log(result);
+        res.status(200).send(result)
+    })
+})
+
+// get invoice by rental_id
+app.post('/invoiceByRentalid', (req, res) => {
+    const {rental_id} = req.body;
+
+    var sql = 'SELECT * FROM invoice WHERE rental_id = ?';
+    var params = [rental_id];
+
+    connection.query(sql, params, function (err, result) {
+        if (err) {
+            console.log('[GET ERROR] - ', err.message);
+            res.send("Error get invoice");
+        }
+
+        console.log(result);
+        res.status(200).send(result);
+    });
+})
+
+// get all payments
+app.get('/payments', (req, res) => {
+    var sql = 'SELECT * FROM payment';
+
+    connection.query(sql, function (err, result) {
+        if (err) {
+            console.log('[SELECT ERROR] - ', err.message);
+            res.status(500).send("Error get locations");
+        }
+        console.log(result);
+        res.status(200).send(result)
+    })
+})
+
+// get payment by inv_id
+app.post('/paymentByInvid', (req, res) => {
+    const {inv_id} = req.body;
+
+    var sql = 'SELECT * FROM payment WHERE inv_id = ?';
+    var params = [inv_id];
+
+    connection.query(sql, params, function (err, result) {
+        if (err) {
+            console.log('[GET ERROR] - ', err.message);
+            res.send("Error get payment");
+        }
+
+        console.log(result);
+        res.status(200).send(result);
+    });
+})

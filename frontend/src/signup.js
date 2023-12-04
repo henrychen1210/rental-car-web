@@ -8,6 +8,12 @@ const Signup = (props) => {
     const [lname, setLname] = useState("")
     const [email, setEmail] = useState("")
     const [phone, setPhone] = useState("")
+    const [dr_lic, setDr_lic] = useState("")
+    const [insurance, setInsurance] = useState("")
+    const [policy, setPolicy] = useState("")
+    const [coopCode, setCoopCode] = useState("")
+    const [empID, setEmpID] = useState("")
+
     const [password, setPassword] = useState("")
     const [emailError, setEmailError] = useState("")
     const [phoneError, setPhoneError] = useState("")
@@ -154,7 +160,7 @@ const Signup = (props) => {
             <div className={"titleContainer"}>
                 <div>Sign Up</div>
             </div>
-            <br /><br /><br />
+            <br />
 
             <div id="signInputContainer">
                 <div className={"inputContainer"}>
@@ -190,6 +196,52 @@ const Signup = (props) => {
                     <label className="errorLabel">{phoneError}</label>
                 </div>
                 <br />
+                
+                <div className={"inputContainer"} style={{ gridColumn: '1 / 3' }}>
+                    <input
+                        value={dr_lic}
+                        placeholder="Driver Licence No."
+                        onChange={ev => setDr_lic(ev.target.value)}
+                        className={"inputBox"} />
+                </div>
+                <br />
+                <div className={"inputContainer"} style={{ gridColumn: '1 / 3' }}>
+                    <input
+                        value={insurance}
+                        placeholder="Insurance Company"
+                        onChange={ev => setInsurance(ev.target.value)}
+                        className={"inputBox"} />
+                </div>
+                <br />
+                <div className={"inputContainer"} style={{ gridColumn: '1 / 3' }}>
+                    <input
+                        value={policy}
+                        placeholder="Insurance Policy No."
+                        onChange={ev => setPolicy(ev.target.value)}
+                        className={"inputBox"} />
+                </div>
+                <br />
+
+                <div className={"inputContainer"} style={{ gridColumn: '1 / 3' }}>
+                    <input
+                        value={coopCode}
+                        placeholder="Corporate Code"
+                        onChange={ev => setCoopCode(ev.target.value)}
+                        className={"inputBox"} />
+                </div>
+                <br />
+
+                <div className={"inputContainer"} style={{ gridColumn: '1 / 3' }}>
+                    <input
+                        value={empID}
+                        placeholder="Employee ID"
+                        onChange={ev => setEmpID(ev.target.value)}
+                        className={"inputBox"} />
+                </div>
+                <br />
+
+                
+
                 <div className={"inputContainer"} style={{ gridColumn: '1 / 3' }}>
                     <input
                         value={password}
@@ -202,6 +254,7 @@ const Signup = (props) => {
                     <label className="errorLabel">{passwordError}</label>
                 </div>
                 <br />
+
                 <div className={"inputContainer"} style={{ gridColumn: '1 / 3' }}>
                     <input
                         className={"inputButton"}
@@ -216,10 +269,7 @@ const Signup = (props) => {
                     </a>
                 </label>
             </div>
-            
-
         </div>
-        
     </div>
 }
 
