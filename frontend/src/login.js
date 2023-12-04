@@ -179,7 +179,7 @@ const Login = (props) => {
                         type="checkbox"
                         onChange={handleCheckboxChange}
                     />
-                    I am Employee
+                    Employee Login
                 </label>
                 <a href="" rel="noreferrer" className="checkboxLabel">
                     <img src='/lock.png' width={"20px"}></img>
