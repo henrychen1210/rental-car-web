@@ -758,6 +758,8 @@ input:focus {
   left: 0px;
   border-radius: 15px;
   padding: 10px;
+  display: flex;
+  flex-direction: row;
 }
 
 .datasearchSection {
@@ -829,13 +831,12 @@ input:focus {
   top: 15px;
   right: 15px;
   color: #3C403F;
-  
 }
 
 .datatitle {
   position: absolute;
-  top: 10px;
-  left: 10px;
+  top: 20px;
+  left: 0px;
   font-size: 25px;
 }
 
@@ -974,3 +975,20 @@ input:focus {
   color: #878787;
 }
 
+.vehicleInfoContainer {
+  width: 50%;
+  height: 80%;
+  position: absolute;
+  top: 50px;
+  right: 15px;
+  color: #3C403F;
+}
+
+.vehicleDetailContainer {
+  display: grid;
+  grid-template-columns: 1fr;
+  margin-top: 130px;
+  gap: 50px;
+  justify-items: start;
+  align-items: start;
+}

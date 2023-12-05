@@ -7,6 +7,7 @@ const Orders = ({}) => {
   const [searchID, setSearchID] = useState('')
   const [selected, setSelected] = useState('')
   const [query, setQuery] = useState('')
+
   const [order, setOrder] = useState({
     orderID: '',
     pick_date: '',
@@ -78,7 +79,7 @@ const Orders = ({}) => {
       setInvoice();
       setPayment();
     }
-    };
+  };
 
   const handleOrderInputChange = (e) => {
     const { name, value } = e.target;
@@ -179,7 +180,8 @@ const Orders = ({}) => {
 
         <div className='modifyDatabaseSection'>
           <div className='datasearchSection'>
-            <input type="text" name="orderID" placeholder='Search Order ID... ' onChange={(newValue) => {setSearchID(newValue)}}/>
+            
+            {/*<input type="text" name="orderID" placeholder='Search Order ID... ' onChange={(newValue) => {setSearchID(newValue)}}/>*/}
 
             <div className='datasearchResultSection'>
               {orderInfo.map((info) =>{

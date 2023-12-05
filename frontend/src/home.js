@@ -1,18 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import MyCheckbox from './component/MyCheckBox.js';
 import { LocalizationProvider, TimePicker, DatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import SortByCheckBox from './component/SortByCheckBox.js';
 import SearchResult from "./component/SearchResult.js";
-
-
-
+import axios from "axios";
 
 const Home = (props) => {
     const { loggedIn, employee, email } = props
     const navigate = useNavigate();
-    const [name, setName] = useState("Henry") // set temparary name
+    const [name, setName] = useState("") // set temparary name
 
     const [pickUpLocation, setPickUpLocation] = useState("")
     const [pickUpDate, setPickUpDate] = useState("")
@@ -21,7 +19,11 @@ const Home = (props) => {
     const [dropOffDate, setDropOffDate] = useState("")
     const [dropOffTime, setDropOffTime] = useState(new Date())
     const [sortBy, setSortBy] = useState("Recommend")
-    const [carList, setVarList] = useState([])
+
+    const [carInfoList, setCarInfoList] = useState([])
+    const [coupon_id, setCoupon_id] = useState("")
+    const [couponInfo, setCouponInfo] = useState("")
+
 
     const [isCheckOut, setIsCheckOut] = useState(false)
     const [selectCar, setSelectCar] = useState("")
@@ -36,7 +38,6 @@ const Home = (props) => {
         invID: '',
     });
     
-
     const location = [
         { id: 1, name: 'New York' },
         { id: 2, name: 'Boston' },
@@ -46,12 +47,32 @@ const Home = (props) => {
         { id: 6, name: 'Columbus' },
     ]
 
-    const carInfoList = [
-        { vin: 1, make: 'Kia', model: 'Forte', capacity: 5, location: 'New York', dailyRate: 120.00},
-        { vin: 2, make: 'Honda', model: 'CR-V', capacity: 5, location: 'Boston', dailyRate: 150.00},
-        { vin: 3, make: 'Toyota',  model: 'Prius', capacity: 5, location: 'Chicago', dailyRate: 115.50},
-        { vin: 4, make: 'Honda', model: 'Civic', capacity: 5, location: 'Columbus', dailyRate: 105.00},
-    ]
+    const getCarInfoList = async () => {
+        try {
+          //const response = await fetch(`http://localhost:3002/vehicles`);
+          //const results = await response.json();
+          const results = await axios.get("http://localhost:3002/vehicles")
+          setCarInfoList(results.data);
+          //console.log(results);
+        } catch (err) {
+          console.log(err);
+        }
+    };
+    
+    const searchPaymentByCouponId = async (couponId) => {
+        try {
+            console.log('couponId: ' + couponId);
+            const results = await axios.post("http://localhost:3002/couponBy", { id: couponId });
+            setCouponInfo(results.data[0])
+            console.log(results.data[0]);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+    
+    useEffect(() => {
+    }, []);
+    
     
     const onButtonClick = () => {
         // You'll update this function later
@@ -80,15 +101,7 @@ const Home = (props) => {
     }
 
     const findButtonClick = () => {
-        console.log(pickUpLocation)
-        console.log(pickUpDate.$d)
-        console.log(pickUpTime.$H + ":" + pickUpTime.$m)
-        console.log(dropOffLocaction)
-        console.log(dropOffDate.$d)
-        console.log(dropOffTime.$H + ":" + dropOffTime.$m)
-
-        console.log(pickUpDate.getMonth() + "/" + pickUpDate.getDate() + "/" + pickUpDate.getFullYear())
-        console.log(dropOffTime.getHours() + ":" + dropOffTime.getMinutes())
+        getCarInfoList();
     }
 
     const handleSortByClick = (newValue) => {
@@ -106,7 +119,7 @@ const Home = (props) => {
     }
 
     const useCouponClick = () => {
-
+        searchPaymentByCouponId(coupon_id)
     }
 
     return <div className="mainContainer">
@@ -227,8 +240,8 @@ const Home = (props) => {
                 */}
 
                 <div className='searchOptionContainer'>
-                    {carInfoList.map((car) =>{
-                        return <SearchResult carInfo={car} setIsCheckOut={setIsCheckOut} setSelectCar={setSelectCar}></SearchResult>
+                    {carInfoList.map((car, index) =>{
+                        return <SearchResult key={index} carInfo={car} setIsCheckOut={setIsCheckOut} setSelectCar={setSelectCar}></SearchResult>
                     })}
                 </div>
 
@@ -265,18 +278,25 @@ const Home = (props) => {
                     <div className="checkOutInfoContainer">
                         <br/>
                         <label> 
-                            Daily rate &nbsp; ${selectCar.dailyRate.toFixed(2)} &nbsp; x &nbsp; {(dropOffDate.getDate() - pickUpDate.getDate())}  &nbsp; = &nbsp; ${(((dropOffDate.getDate() - pickUpDate.getDate())) * selectCar.dailyRate).toFixed(2)}
+                            Daily rate &nbsp; ${selectCar.daily_rate.toFixed(2)} &nbsp; x &nbsp; {(dropOffDate.getDate() - pickUpDate.getDate())} day &nbsp; = &nbsp; ${(((dropOffDate.getDate() - pickUpDate.getDate())) * selectCar.daily_rate).toFixed(2)}
                         </label>
 
-                        <div onSubmit="" className="checkOutForm">
-                            <label className='checkOutFormSubtitle'> Coupon: &nbsp;
-                                <input type="text" name="card_num" onChange=""/>
-                            </label>
+                        <div className="checkOutForm">
+                            {couponInfo == '' &&  <label className='checkOutFormSubtitle'> Coupon: &nbsp;
+                                    <input type="text" value={coupon_id} onChange={(event) => setCoupon_id(event.target.value)}/>
+                                </label>
+                            }
+
+                            {couponInfo != '' &&  <label className='checkOutFormSubtitle'> Coupon: &nbsp;
+                                    {couponInfo.dis_per}% off = ${(((dropOffDate.getDate() - pickUpDate.getDate())) * selectCar.daily_rate).toFixed(2) * (1 - couponInfo.dis_per / 100)}
+                                </label>
+                            }
+
+                           
                             <button  className='submitButton' onClick={useCouponClick}>
                                 Use Coupon
                             </button> 
                         </div>
-
                     </div>
                 </div>
 
@@ -309,14 +329,8 @@ const Home = (props) => {
 
                     
                 </div>
-            </div>
-
-            }
-
-
+            </div>}
         </div>
-        
-
     </div>
 }
 

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from 'react';
+import axios from "axios";
 
 const Login = (props) => {
     const [loggedIn, setLoggedIn] = useState(false)
@@ -28,29 +29,25 @@ const Login = (props) => {
     }
 
     // Log in a user using email and password
-    const logIn = () => {
-        fetch("http://localhost:3080/auth", {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-              },
-            body: JSON.stringify({email, password})
-        })
-        .then(r => r.json())
-        .then(r => {
-            if ('success' === r.message) {
-                localStorage.setItem("user", JSON.stringify({email, token: r.token}))
-                props.setLoggedIn(true)
+    const logIn = async () => {
+        try {
+            const results = await axios.post("http://localhost:3002/login", { email: email, password: password });
+            console.log(results.data);
+
+            if (results.data == "login sucessfully!") {
+                setLoggedIn(true)
                 props.setEmail(email)
+                props.setLoggedIn(true)
                 navigate("/")
-            } else {
-                window.alert("Wrong email or password")
             }
-        })
+        } catch (err) {
+            console.log(err);
+        }
     }
         
     const onButtonClick = () => {
 
+        /*
         // Set initial error values to empty
         setEmailError("")
         setPasswordError("")
@@ -94,7 +91,8 @@ const Login = (props) => {
                     }
             })  
         }
-        
+        */
+        logIn()
         
     }
 
@@ -194,9 +192,7 @@ const Login = (props) => {
                     Sign up
                 </a>
             </label>
-
         </div>
-        
     </div>
 }
 
