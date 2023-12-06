@@ -1,6 +1,5 @@
 import { Fragment, useState } from 'react'
-import { Combobox, Transition } from '@headlessui/react'
-import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
+import axios from "axios";
 
 
 const Vehicles = ({carInfo}) => {
@@ -12,16 +11,16 @@ const Vehicles = ({carInfo}) => {
   const [selectedVehicle, setSelectedVehicle] = useState("")
   const [query, setQuery] = useState('')
 
-  const vehicel_class = [
+  const [vehicle_class, setVehicle_class] = useState([
     {classID: '10001', cl_name:'Small', daily_rate: 35, over_mlg_fee: 2, odo_limit: 100},
     {classID: '10002', cl_name: 'Compact', daily_rate: 45, over_mlg_fee: 2, odo_limit: 120},
     {classID: '10003', cl_name: 'Midsize', daily_rate: 55, over_mlg_fee: 3, odo_limit: 140},
     {classID: '10004', cl_name: 'Fullsize', daily_rate: 65, over_mlg_fee: 3, odo_limit: 160},
     {classID: '10005', cl_name: 'SUV', daily_rate: 75, over_mlg_fee: 4, odo_limit: 180},
     {classID: '10006', cl_name: 'Luxury', daily_rate: 85, over_mlg_fee: 4, odo_limit: 200},
-  ]
+  ])
 
-  const vehicel = [
+  const [vehicle, setVehicle] = useState([
     {vin: '0001', make: 'Toyota', model: 'Corolla', year: '2023', plate: 'ABC123', classID: '10001'},
     {vin: '0002', make: 'Honda', model: 'Civic', year: '2023', plate: 'XYZ456', classID: '10001'},
     {vin: '0003', make: 'Ford', model: 'Escape', year: '2023', plate: 'LMN789', classID: '10001'},
@@ -46,7 +45,28 @@ const Vehicles = ({carInfo}) => {
     {vin: '0052', make: 'Honda', model: 'Civic', year: '2023', plate: 'XYZ456', classID: '10006'},
     {vin: '0053', make: 'Ford', model: 'Escape', year: '2023', plate: 'LMN789', classID: '10006'},
     {vin: '0054', make: 'Chevrolet', model: 'Malibu', year: '2023', plate: 'PQR101', classID: '10006'},
-  ]
+  ])
+
+    // ??
+    const getVehicle = async () => {
+        try {
+            const results = await axios.get("http://localhost:3002/vehicles")
+            setVehicle(results.data);
+            //console.log(results);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    const getVehicle_class = async () => {
+        try {
+            const results = await axios.get("http://localhost:3002/vehicles")
+            setVehicle_class(results.data);
+            //console.log(results);
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
   const handleClassIDclick = (classID) => {
     setSelectedClassID(classID);
@@ -54,10 +74,10 @@ const Vehicles = ({carInfo}) => {
     setSelectedVClass();
     setAllVehicle();
 
-    const selectedClass = vehicel_class.find(vehicel_class => vehicel_class.classID === classID);
+    const selectedClass = vehicle_class.find(vehicle_class => vehicle_class.classID === classID);
     setSelectedVClass(selectedClass);
 
-    const vehiclesMatchingClass = vehicel.filter(vehicle => vehicle.classID === classID);
+    const vehiclesMatchingClass = vehicle.filter(vehicle => vehicle.classID === classID);
     setAllVehicle(vehiclesMatchingClass);
 
     setSelectedVIN();
@@ -114,7 +134,7 @@ const Vehicles = ({carInfo}) => {
         <div className='modifyDatabaseSection'>
           <div className='datasearchSection'>
             <div className='datasearchResultSection'>
-                {vehicel_class.map((info) =>{
+                {vehicle_class.map((info) =>{
                     return<button key={`vehicel_class_${info.classID}`} onClick={() => handleClassIDclick(info.classID)}>
                         {selectedClassID === info.classID && <img src='/right.png' width={"16px"}></img>}
                             <label>{info.cl_name}</label>

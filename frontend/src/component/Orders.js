@@ -1,5 +1,5 @@
 import { Fragment, useState } from 'react'
-
+import axios from "axios";
 
 
 
@@ -38,30 +38,61 @@ const Orders = ({}) => {
     invID: '',
   });
 
-  const orderInfo = [
+  const [orderInfo, setOrderInfo] = useState([
     {orderID: '10001', pick_date: '2023-12-01', drop_date: '2023-12-3', start_odo: '562014', end_odo: '927432', pick_loc: 'New York', drop_loc: 'Boston', customer_id: '99823', vin: 'JJJJJJ87621', coupon_id: '12345'},
     {orderID: '10002', pick_date: '2023-12-01', drop_date: '2023-12-3', start_odo: '562014', end_odo: '927432', pick_loc: 'New York', drop_loc: 'Boston', customer_id: '998q3', vin: 'JJJJJJ87621', coupon_id: '12345'},
     {orderID: '10003', pick_date: '2023-12-01', drop_date: '2023-12-3', start_odo: '562014', end_odo: '927432', pick_loc: 'New York', drop_loc: 'Boston', customer_id: '99q23', vin: 'JJJJJJ87621', coupon_id: '12345'},
     {orderID: '10004', pick_date: '2023-12-01', drop_date: '2023-12-3', start_odo: '562014', end_odo: '927432', pick_loc: 'New York', drop_loc: 'Boston', customer_id: '99123', vin: 'JJJJJJ87621', coupon_id: '12345'},
     {orderID: '10005', pick_date: '2023-12-01', drop_date: '2023-12-3', start_odo: '562014', end_odo: '927432', pick_loc: 'New York', drop_loc: 'Boston', customer_id: '92123', vin: 'JJJJJJ87621', coupon_id: '12345'},
     {orderID: '10006', pick_date: '2023-12-01', drop_date: '2023-12-3', start_odo: '562014', end_odo: '927432', pick_loc: 'New York', drop_loc: 'Boston', customer_id: '92123', vin: 'JJJJJJ87621', coupon_id: '12345'}
-  ]
+  ])
 
-  const invoiceInfo = [
+  const [invoiceInfo, setInoviceInfo] = useState([
     {invID: '991', inv_date: '2023-12-01', inv_amt: 33002, orderID:'10001'},
     {invID: '992', inv_date: '2023-12-07', inv_amt: 3212, orderID:'10002'},
     {invID: '993', inv_date: '2023-12-02', inv_amt: 2002, orderID:'10003'},
     {invID: '994', inv_date: '2023-12-03', inv_amt: 1002, orderID:'10004'},
     {invID: '995', inv_date: '2023-12-06', inv_amt: 87112, orderID:'10005'},
-  ]
+  ])
 
-  const paymentInfo = [
+  const [paymentInfo, setPaymentInfo] = useState([
     {paymentID: '001', pmt_date: '2023-12-01', pmt_method: 'credit', card_num: '1234-5678-9012-3456', paid_amt: 33002, invID: '991'},
     {paymentID: '002', pmt_date: '2023-12-01', pmt_method: 'credit', card_num: '1234-5678-9012-3456', paid_amt: 3212, invID: '992'},
     {paymentID: '003', pmt_date: '2023-12-01', pmt_method: 'credit', card_num: '1234-5678-9012-3456', paid_amt: 2002, invID: '993'},
     {paymentID: '004', pmt_date: '2023-12-01', pmt_method: 'credit', card_num: '1234-5678-9012-3456', paid_amt: 1002, invID: '994'},
     {paymentID: '005', pmt_date: '2023-12-01', pmt_method: 'credit', card_num: '1234-5678-9012-3456', paid_amt: 87112, invID: '995'},
-  ]
+  ])
+
+  // ??
+  const getOrderInfo = async () => {
+    try {
+      const results = await axios.get("http://localhost:3002/vehicles")
+      setOrderInfo(results.data);
+      //console.log(results);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const getInvoiceInfo = async () => {
+    try {
+      const results = await axios.get("http://localhost:3002/vehicles")
+      setInoviceInfo(results.data);
+      //console.log(results);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const getPaymentInfo = async () => {
+    try {
+      const results = await axios.get("http://localhost:3002/vehicles")
+      setPaymentInfo(results.data);
+      //console.log(results);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const handleorderIDclick = (orderID) => {
     setSelected(orderID);
@@ -163,7 +194,7 @@ const Orders = ({}) => {
             <label className='fontSize20'> Payment </label>
             <label className='dataDetail'> Date: {payment?.pmt_date || 'N/A'} </label>
             <label className='dataDetail'>Method: {payment?.pmt_method || 'N/A'} </label>
-            <label className='dataDetail'> Card No.: {payment?.card_num || 'N/A'} </label>
+            <label className='dataDetail'> Card: {payment?.card_num || 'N/A'} </label>
             <label className='dataDetail'> Amount: {payment?.paid_amt || 'N/A'} </label>
           </div>
           

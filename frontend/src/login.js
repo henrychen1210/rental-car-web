@@ -32,22 +32,50 @@ const Login = (props) => {
     const logIn = async () => {
         try {
             const results = await axios.post("http://localhost:3002/login", { email: email, password: password });
-            console.log(results.data);
+            //console.log(results.data);
 
             if (results.data == "login sucessfully!") {
                 setLoggedIn(true)
                 props.setEmail(email)
                 props.setLoggedIn(true)
+                props.setFName("Henry") /// henry!!!!
                 navigate("/")
             }
+            else  {
+                setPasswordError("Wrong Email or Password")
+            }
         } catch (err) {
+            setPasswordError("Wrong Email or Password")
+            console.log(err);
+        }
+    }
+
+    // Log in a employee using email and password ???
+    const empLogIn = async () => {
+        try {
+            const results = await axios.post("http://localhost:3002/login", { email: email, password: password });
+            //console.log(results.data);
+
+            if (results.data == "login sucessfully!") {
+                setLoggedIn(true)
+                props.setEmail(email)
+                props.setLoggedIn(true)
+                props.setEsetEmployee(true)
+                props.setFName("Henry") /// henry!!!!
+                navigate("/")
+            }
+            else  {
+                setPasswordError("Wrong Email or Password")
+            }
+        } catch (err) {
+            setPasswordError("Wrong Email or Password")
             console.log(err);
         }
     }
         
     const onButtonClick = () => {
 
-        /*
+        
         // Set initial error values to empty
         setEmailError("")
         setPasswordError("")
@@ -74,10 +102,12 @@ const Login = (props) => {
         }
 
         if (isEmployeeChecked) {
-            // lgo in as employee
-            console.log("employee login!!!")
+            empLogIn()
         }
         else {
+
+            logIn()
+            /*
             // Authentication calls will be made here...       
             // Check if email has an account associated with it
             checkAccountExists(accountExists => {
@@ -89,11 +119,9 @@ const Login = (props) => {
                     if (window.confirm("An account does not exist with this email address: " + email + ". Do you want to create a new account?")) {
                         logIn()
                     }
-            })  
-        }
-        */
-        logIn()
-        
+            })
+            */
+        }      
     }
 
     const handleCheckboxChange = (event) => {
@@ -156,6 +184,7 @@ const Login = (props) => {
             <br />
             <div className={"inputContainer"}>
                 <input
+                    type="password"
                     value={password}
                     placeholder="Password"
                     onChange={ev => setPassword(ev.target.value)}

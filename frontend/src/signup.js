@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from 'react';
+import axios from "axios";
 
 const Signup = (props) => {
     const [loggedIn, setLoggedIn] = useState(false)
@@ -11,8 +12,12 @@ const Signup = (props) => {
     const [dr_lic, setDr_lic] = useState("")
     const [insurance, setInsurance] = useState("")
     const [policy, setPolicy] = useState("")
-    const [coopCode, setCoopCode] = useState("")
+
+    const [corpName, setCorpName] = useState("")
+    const [corpNo, setCorpNo] = useState("")
     const [empID, setEmpID] = useState("")
+
+    const [accountType, setAccountType] = useState("")
 
     const [password, setPassword] = useState("")
     const [emailError, setEmailError] = useState("")
@@ -58,6 +63,50 @@ const Signup = (props) => {
             }
         })
     }
+
+    ///// ???
+    const individualSignUp = async () => {
+        try {
+            const results = await axios.post("http://localhost:3002/login", { email: email, password: password });
+            //console.log(results.data);
+
+            if (results.data == "login sucessfully!") {
+                setLoggedIn(true)
+                props.setEmail(email)
+                props.setLoggedIn(true)
+                props.setFName("Henry") /// henry!!!!
+                navigate("/")
+            }
+            else  {
+                setPasswordError("Wrong Email or Password")
+            }
+        } catch (err) {
+            setPasswordError("Wrong Email or Password")
+            console.log(err);
+        }
+    }
+
+    /// ????
+    const corprateSignUp= async () => {
+        try {
+            const results = await axios.post("http://localhost:3002/login", { email: email, password: password });
+            //console.log(results.data);
+
+            if (results.data == "login sucessfully!") {
+                setLoggedIn(true)
+                props.setEmail(email)
+                props.setLoggedIn(true)
+                props.setFName("Henry") /// henry!!!!
+                navigate("/")
+            }
+            else  {
+                setPasswordError("Wrong Email or Password")
+            }
+        } catch (err) {
+            setPasswordError("Wrong Email or Password")
+            console.log(err);
+        }
+    }
         
     const onButtonClick = () => {
 
@@ -96,9 +145,15 @@ const Signup = (props) => {
             setPasswordError("The password must be 8 characters or longer")
             return
         }
+        
+        if (accountType == "I") {
+            individualSignUp()
+        }
+        else if (accountType == "C") {
+            corprateSignUp()
+        }
 
-
-
+        /*
         // Authentication calls will be made here...       
         // Check if email has an account associated with it
         checkAccountExists(accountExists => {
@@ -111,6 +166,7 @@ const Signup = (props) => {
                     logIn()
                 }
         })  
+        */
     }
 
     const handleCheckboxChange = (event) => {
@@ -162,113 +218,178 @@ const Signup = (props) => {
             </div>
             <br />
 
-            <div id="signInputContainer">
-                <div className={"inputContainer"}>
-                    <input
-                        value={fname}
-                        placeholder="First Name"
-                        onChange={ev => setFname(ev.target.value)}
-                        className={"inputBoxSmall"} />
-                </div>
-                <div className={"inputContainer"}>
-                    <input
-                        value={lname}
-                        placeholder="Last Name"
-                        onChange={ev => setLname(ev.target.value)}
-                        className={"inputBoxSmall"} />
-                </div>
-                <br />
-                <div className={"inputContainer"} style={{ gridColumn: '1 / 3' }}>
-                    <input
-                        value={email}
-                        placeholder="Email"
-                        onChange={ev => setEmail(ev.target.value)}
-                        className={"inputBox"} />
-                    <label className="errorLabel">{emailError}</label>
-                </div>
-                <br />
-                <div className={"inputContainer"} style={{ gridColumn: '1 / 3' }}>
-                    <input
-                        value={phone}
-                        placeholder="+1 | Phone No."
-                        onChange={ev => setPhone(ev.target.value)}
-                        className={"inputBox"} />
-                    <label className="errorLabel">{phoneError}</label>
-                </div>
-                <br />
-                
-                <div className={"inputContainer"} style={{ gridColumn: '1 / 3' }}>
-                    <input
-                        value={dr_lic}
-                        placeholder="Driver Licence No."
-                        onChange={ev => setDr_lic(ev.target.value)}
-                        className={"inputBox"} />
-                </div>
-                <br />
-                <div className={"inputContainer"} style={{ gridColumn: '1 / 3' }}>
-                    <input
-                        value={insurance}
-                        placeholder="Insurance Company"
-                        onChange={ev => setInsurance(ev.target.value)}
-                        className={"inputBox"} />
-                </div>
-                <br />
-                <div className={"inputContainer"} style={{ gridColumn: '1 / 3' }}>
-                    <input
-                        value={policy}
-                        placeholder="Insurance Policy No."
-                        onChange={ev => setPolicy(ev.target.value)}
-                        className={"inputBox"} />
-                </div>
-                <br />
-
-                <div className={"inputContainer"} style={{ gridColumn: '1 / 3' }}>
-                    <input
-                        value={coopCode}
-                        placeholder="Corporate Code"
-                        onChange={ev => setCoopCode(ev.target.value)}
-                        className={"inputBox"} />
-                </div>
-                <br />
-
-                <div className={"inputContainer"} style={{ gridColumn: '1 / 3' }}>
-                    <input
-                        value={empID}
-                        placeholder="Employee ID"
-                        onChange={ev => setEmpID(ev.target.value)}
-                        className={"inputBox"} />
-                </div>
-                <br />
-
-                
-
-                <div className={"inputContainer"} style={{ gridColumn: '1 / 3' }}>
-                    <input
-                        value={password}
-                        placeholder="Password"
-                        onChange={ev => setPassword(ev.target.value)}
-                        className={"inputBox"} />
-                    <label className="checkboxLabel">
-                        The password must be 8 characters or longer.
-                    </label>
-                    <label className="errorLabel">{passwordError}</label>
-                </div>
-                <br />
-
-                <div className={"inputContainer"} style={{ gridColumn: '1 / 3' }}>
-                    <input
-                        className={"inputButton"}
-                        type="button"
-                        onClick={onButtonClick}
-                        value={"Sign Up"} />
-                </div>
-                <label className="checkboxLabel" style={{ gridColumn: '1 / 3' }}>
-                    Already have an account? &nbsp;
-                    <a href="/login" rel="noreferrer" className="linklabel">
-                        Login
-                    </a>
-                </label>
+            <div className="signUpTypeButtonContainer">
+                <button onClick={() => setAccountType("I")} className={accountType == "I" ? "selectButtonI": "nonSelectButtonI"}> Individual </button>
+                <button onClick={() => setAccountType("C")} className={accountType == "C" ? "selectButtonC": "nonSelectButtonC"}> Corporate </button>
             </div>
+            
+
+            {accountType == "I" && 
+                <div id="signInputContainer">
+                    <div className={"inputContainer"}>
+                        <input
+                            value={fname}
+                            placeholder="First Name"
+                            onChange={ev => setFname(ev.target.value)}
+                            className={"inputBoxSmall"} />
+                            
+                    </div>
+
+                    <div className={"inputContainer"}>
+                        <input
+                            value={lname}
+                            placeholder="Last Name"
+                            onChange={ev => setLname(ev.target.value)}
+                            className={"inputBoxSmall"} />
+                    </div>
+                
+                    <div className={"inputContainer"} style={{ gridColumn: '1 / 3' }}>
+                        <input
+                            value={dr_lic}
+                            placeholder="Driver Licence No."
+                            onChange={ev => setDr_lic(ev.target.value)}
+                            className={"inputBox"} />
+                    </div>
+                    
+                    <div className={"inputContainer"} style={{ gridColumn: '1 / 3' }}>
+                        <input
+                            value={insurance}
+                            placeholder="Insurance Company"
+                            onChange={ev => setInsurance(ev.target.value)}
+                            className={"inputBox"} />
+                    </div>
+                    
+                    <div className={"inputContainer"} style={{ gridColumn: '1 / 3' }}>
+                        <input
+                            value={policy}
+                            placeholder="Insurance Policy No."
+                            onChange={ev => setPolicy(ev.target.value)}
+                            className={"inputBox"} />
+                    </div>
+
+                    <div className={"inputContainer"} style={{ gridColumn: '1 / 3' }}>
+                        <input
+                            value={email}
+                            placeholder="Email"
+                            onChange={ev => setEmail(ev.target.value)}
+                            className={"inputBox"} />
+                        <label className="errorLabel">{emailError}</label>
+                    </div>
+                
+                    <div className={"inputContainer"} style={{ gridColumn: '1 / 3' }}>
+                        <input
+                            value={phone}
+                            placeholder="+1 | Phone No."
+                            onChange={ev => setPhone(ev.target.value)}
+                            className={"inputBox"} />
+                        <label className="errorLabel">{phoneError}</label>
+                    </div>
+                    
+
+                    <div className={"inputContainer"} style={{ gridColumn: '1 / 3' }}>
+                        <input
+                            type="password"
+                            value={password}
+                            placeholder="Password"
+                            onChange={ev => setPassword(ev.target.value)}
+                            className={"inputBox"} />
+                        <label className="checkboxLabel">
+                            The password must be 8 characters or longer.
+                        </label>
+                        <label className="errorLabel">{passwordError}</label>
+                    </div>
+                    
+
+                    <div className={"inputContainer"} style={{ gridColumn: '1 / 3' }}>
+                        <input
+                            className={"inputButton"}
+                            type="button"
+                            onClick={onButtonClick}
+                            value={"Sign Up"} />
+                    </div>
+                    <label className="checkboxLabel" style={{ gridColumn: '1 / 3' }}>
+                        Already have an account? &nbsp;
+                        <a href="/login" rel="noreferrer" className="linklabel">
+                            Login
+                        </a>
+                    </label>
+                </div>
+            }
+
+            {accountType == "C" &&
+                <div id="signInputContainer">
+                    <div className={"inputContainer"} style={{ gridColumn: '1 / 3' }}>
+                        <input
+                            value={dr_lic}
+                            placeholder="Corporate Name"
+                            onChange={ev => setCorpName(ev.target.value)}
+                            className={"inputBox"} />
+                    </div>
+                    
+                    <div className={"inputContainer"} style={{ gridColumn: '1 / 3' }}>
+                        <input
+                            value={insurance}
+                            placeholder="Registration number"
+                            onChange={ev => setCorpNo(ev.target.value)}
+                            className={"inputBox"} />
+                    </div>
+                    
+                    <div className={"inputContainer"} style={{ gridColumn: '1 / 3' }}>
+                        <input
+                            value={policy}
+                            placeholder="Employee ID"
+                            onChange={ev => setEmpID(ev.target.value)}
+                            className={"inputBox"} />
+                    </div>
+
+                    <div className={"inputContainer"} style={{ gridColumn: '1 / 3' }}>
+                        <input
+                            value={email}
+                            placeholder="Email"
+                            onChange={ev => setEmail(ev.target.value)}
+                            className={"inputBox"} />
+                        <label className="errorLabel">{emailError}</label>
+                    </div>
+                
+                    <div className={"inputContainer"} style={{ gridColumn: '1 / 3' }}>
+                        <input
+                            value={phone}
+                            placeholder="+1 | Phone No."
+                            onChange={ev => setPhone(ev.target.value)}
+                            className={"inputBox"} />
+                        <label className="errorLabel">{phoneError}</label>
+                    </div>
+                    
+
+                    <div className={"inputContainer"} style={{ gridColumn: '1 / 3' }}>
+                        <input
+                            type="password"
+                            value={password}
+                            placeholder="Password"
+                            onChange={ev => setPassword(ev.target.value)}
+                            className={"inputBox"} />
+                        <label className="checkboxLabel">
+                            The password must be 8 characters or longer.
+                        </label>
+                        <label className="errorLabel">{passwordError}</label>
+                    </div>
+                    
+
+                    <div className={"inputContainer"} style={{ gridColumn: '1 / 3' }}>
+                        <input
+                            className={"inputButton"}
+                            type="button"
+                            onClick={onButtonClick}
+                            value={"Sign Up"} />
+                    </div>
+                    <label className="checkboxLabel" style={{ gridColumn: '1 / 3' }}>
+                        Already have an account? &nbsp;
+                        <a href="/login" rel="noreferrer" className="linklabel">
+                            Login
+                        </a>
+                    </label>
+                </div>
+            }
         </div>
     </div>
 }

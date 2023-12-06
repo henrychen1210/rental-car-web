@@ -47,10 +47,9 @@ const Home = (props) => {
         { id: 6, name: 'Columbus' },
     ]
 
+    // ??
     const getCarInfoList = async () => {
         try {
-          //const response = await fetch(`http://localhost:3002/vehicles`);
-          //const results = await response.json();
           const results = await axios.get("http://localhost:3002/vehicles")
           setCarInfoList(results.data);
           //console.log(results);
@@ -59,7 +58,20 @@ const Home = (props) => {
         }
     };
     
+    // ??
     const searchPaymentByCouponId = async (couponId) => {
+        try {
+            console.log('couponId: ' + couponId);
+            const results = await axios.post("http://localhost:3002/couponBy", { id: couponId });
+            setCouponInfo(results.data[0])
+            console.log(results.data[0]);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    // ???
+    const placeOrder = async (couponId) => {
         try {
             console.log('couponId: ' + couponId);
             const results = await axios.post("http://localhost:3002/couponBy", { id: couponId });
@@ -115,7 +127,7 @@ const Home = (props) => {
       };
       
     const placeTheOrderClick = () => {
-
+        placeOrder()
     }
 
     const useCouponClick = () => {
@@ -142,15 +154,15 @@ const Home = (props) => {
             </div>)}
 
             {(loggedIn && !employee && <div id="accountButtonSection">
-                <button onClick={handleToSignupClick} id="accountButton">
-                    <label >Hi, {name}</label>
+                <button id="accountButton">
+                    <label >Hi, {props.fName}</label>
                     <img src='/account.png' width={"30px"}></img>
                 </button>
             </div>)}
 
             {(loggedIn && employee && <div id="accountButtonSection">
                 <button onClick={handleToManageClick} id="accountButton">
-                    <label >Hi, {name}</label>
+                    <label >Hi, Employee</label>
                     <img src='/account.png' width={"30px"}></img>
                 </button>
             </div>)}
@@ -232,7 +244,7 @@ const Home = (props) => {
             
 
             {!isCheckOut && <div className="searchSection">
-                {/* A JSX comment 
+                {/*
                 <div className="sortByContainer">
                     <label>Sort By</label>
                     <SortByCheckBox onChange={handleSortByClick}></SortByCheckBox>
