@@ -1,15 +1,14 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useState, useEffect } from 'react'
 import axios from "axios";
 
 
 
 const Orders = ({}) => {
-  const [searchID, setSearchID] = useState('')
   const [selected, setSelected] = useState('')
-  const [query, setQuery] = useState('')
+  const [orderList, setOrderList] = useState([])
 
-  const [order, setOrder] = useState({
-    orderID: '',
+  const [orderInfo, setOrderInfo] = useState({
+    rental_id: '',
     pick_date: '',
     drop_date: '',
     start_odo: '',
@@ -18,190 +17,171 @@ const Orders = ({}) => {
     drop_loc: '',
     customer_id: '',
     vin: '',
-    coupon_id: '',
+    coupon_id: ''
   });
 
-  const [invoice, setInvoice] = useState({
-    invID: '',
+  const [invoiceInfo, setInvoiceInfo] = useState({
+    inv_id: '',
     inv_date: '',
     inv_amt: '',
-    orderID: ''
+    rental_id: ''
   });
 
-  const [payment, setPayment] = useState({
-    paymentID: '',
+  const [paymentInfo, setPaymentInfo] = useState({
+    payment_id: '',
     pmt_date: '',
     pmt_method: '',
     start_odo: '',
     car_num: '',
     paid_amt: '',
-    invID: '',
+    inv_id: '',
   });
 
-  const [orderInfo, setOrderInfo] = useState([
-    {orderID: '10001', pick_date: '2023-12-01', drop_date: '2023-12-3', start_odo: '562014', end_odo: '927432', pick_loc: 'New York', drop_loc: 'Boston', customer_id: '99823', vin: 'JJJJJJ87621', coupon_id: '12345'},
-    {orderID: '10002', pick_date: '2023-12-01', drop_date: '2023-12-3', start_odo: '562014', end_odo: '927432', pick_loc: 'New York', drop_loc: 'Boston', customer_id: '998q3', vin: 'JJJJJJ87621', coupon_id: '12345'},
-    {orderID: '10003', pick_date: '2023-12-01', drop_date: '2023-12-3', start_odo: '562014', end_odo: '927432', pick_loc: 'New York', drop_loc: 'Boston', customer_id: '99q23', vin: 'JJJJJJ87621', coupon_id: '12345'},
-    {orderID: '10004', pick_date: '2023-12-01', drop_date: '2023-12-3', start_odo: '562014', end_odo: '927432', pick_loc: 'New York', drop_loc: 'Boston', customer_id: '99123', vin: 'JJJJJJ87621', coupon_id: '12345'},
-    {orderID: '10005', pick_date: '2023-12-01', drop_date: '2023-12-3', start_odo: '562014', end_odo: '927432', pick_loc: 'New York', drop_loc: 'Boston', customer_id: '92123', vin: 'JJJJJJ87621', coupon_id: '12345'},
-    {orderID: '10006', pick_date: '2023-12-01', drop_date: '2023-12-3', start_odo: '562014', end_odo: '927432', pick_loc: 'New York', drop_loc: 'Boston', customer_id: '92123', vin: 'JJJJJJ87621', coupon_id: '12345'}
-  ])
 
-  const [invoiceInfo, setInoviceInfo] = useState([
-    {invID: '991', inv_date: '2023-12-01', inv_amt: 33002, orderID:'10001'},
-    {invID: '992', inv_date: '2023-12-07', inv_amt: 3212, orderID:'10002'},
-    {invID: '993', inv_date: '2023-12-02', inv_amt: 2002, orderID:'10003'},
-    {invID: '994', inv_date: '2023-12-03', inv_amt: 1002, orderID:'10004'},
-    {invID: '995', inv_date: '2023-12-06', inv_amt: 87112, orderID:'10005'},
-  ])
-
-  const [paymentInfo, setPaymentInfo] = useState([
-    {paymentID: '001', pmt_date: '2023-12-01', pmt_method: 'credit', card_num: '1234-5678-9012-3456', paid_amt: 33002, invID: '991'},
-    {paymentID: '002', pmt_date: '2023-12-01', pmt_method: 'credit', card_num: '1234-5678-9012-3456', paid_amt: 3212, invID: '992'},
-    {paymentID: '003', pmt_date: '2023-12-01', pmt_method: 'credit', card_num: '1234-5678-9012-3456', paid_amt: 2002, invID: '993'},
-    {paymentID: '004', pmt_date: '2023-12-01', pmt_method: 'credit', card_num: '1234-5678-9012-3456', paid_amt: 1002, invID: '994'},
-    {paymentID: '005', pmt_date: '2023-12-01', pmt_method: 'credit', card_num: '1234-5678-9012-3456', paid_amt: 87112, invID: '995'},
-  ])
-
-  // ??
-  const getOrderInfo = async () => {
+  // get all order
+  const getOrderList = async () => {
     try {
-      const results = await axios.get("http://localhost:3002/vehicles")
-      setOrderInfo(results.data);
-      //console.log(results);
+        const results = await axios.get("http://localhost:3002/get_all_orders")
+        setOrderList(results.data);
+        //console.log(orderList);
+    } catch (err) {
+        console.log(err);
+    }
+  };
+
+  // get order by id
+  const getOrderInfo = async (rental_id) => {
+    try {
+      const results = await axios.post("http://localhost:3002/get_order", { rental_id: rental_id });
+      setOrderInfo(results.data[0]);
+      //console.log(orderInfo);
+    } catch (err) {
+        console.log(err);
+    }
+  };
+
+  // get invoice by rental_id 
+  const getInvoiceInfo = async (rental_id) => {
+    try {
+      const results = await axios.post("http://localhost:3002/get_invoice", { rental_id: rental_id })
+
+      setInvoiceInfo(results.data[0]);
+      //console.log(invoiceInfo);
+
+      const inv_id = results.data[0].inv_id; // Assuming inv_id is available in the response
+      await getPaymentInfo(inv_id);
+
     } catch (err) {
       console.log(err);
     }
   };
 
-  const getInvoiceInfo = async () => {
+  // get payment by inv_id 
+  const getPaymentInfo = async (inv_id) => {
     try {
-      const results = await axios.get("http://localhost:3002/vehicles")
-      setInoviceInfo(results.data);
-      //console.log(results);
+      const results = await axios.post("http://localhost:3002/get_payment", { inv_id: inv_id })
+      setPaymentInfo(results.data[0]);
+      //console.log(paymentInfo);
     } catch (err) {
       console.log(err);
     }
   };
 
-  const getPaymentInfo = async () => {
-    try {
-      const results = await axios.get("http://localhost:3002/vehicles")
-      setPaymentInfo(results.data);
-      //console.log(results);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const handleorderIDclick = (orderID) => {
-    setSelected(orderID);
-  
-    // Find the order
-    const selectedOrder = orderInfo.find(orderInfo => orderInfo.orderID === orderID);
-    setOrder(selectedOrder);
-  
-    const selectedInvoice = invoiceInfo.find(invoiceInfo => invoiceInfo.orderID === orderID);
-    if (selectedInvoice) {
-      setInvoice(selectedInvoice);
-      const selectedPayment = paymentInfo.find(paymentInfo => paymentInfo.invID === selectedInvoice.invID);
-      setPayment(selectedPayment);
-    } else {
-      setInvoice();
-      setPayment();
-    }
+  const handleorderIDclick = (rental_id) => {
+    setSelected(rental_id);
+    getOrderInfo(rental_id);
+    getInvoiceInfo(rental_id);
   };
 
   const handleOrderInputChange = (e) => {
     const { name, value } = e.target;
-    setOrder({ ...order, [name]: value });
+    //setOrder({ ...order, [name]: value });
   };
 
   const handleInvoiceInputChange = (e) => {
     const { name, value } = e.target;
-    setInvoice({ ...invoice, [name]: value });
+    //setInvoice({ ...invoice, [name]: value });
   };
 
   const handlePaymentInputChange = (e) => {
     const { name, value } = e.target;
-    setPayment({ ...payment, [name]: value });
+    //setPayment({ ...payment, [name]: value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Submitted Order:", order);
-    console.log("Submitted Invoice:", invoice);
-    console.log("Submitted Payment:", payment);
   }
 
   const handleInsertOrder = () => {
     const lastOrderID = orderInfo.length > 0 ? parseInt(orderInfo[orderInfo.length - 1].orderID) : 0;
     const newOrderID = (lastOrderID + 1).toString();
-    setOrder();
-    setOrder({ ...order, orderID: newOrderID });
+    //setOrder();
+    //setOrder({ ...order, orderID: newOrderID });
 
-    setInvoice();
-    setPayment();
-    setSelected(newOrderID);
+    //setInvoice();
+    //setPayment();
+    //setSelected(newOrderID);
   }
 
   const renderOrderDetail = () => (
     <div className='orderInfoContainer'>
-      <label className='datatitle'> Order ID #{order.orderID}</label>
+      <label className='datatitle'> Order ID #{orderInfo.rental_id}</label>
 
       <form onSubmit={handleSubmit}>
         <div className='orderDetailContainer'>
           <div className='dataContainer'>
             <label className='fontSize20'> Customer </label>
-            <label className='dataDetail'> ID: {order.customer_id}
+            <label className='dataDetail'> ID: {orderInfo.customer_id}
               
             </label>
           </div>
 
           <div className='dataContainer'>
             <label className='fontSize20'> Vehicle </label>
-            <label className='dataDetail'> VIN: {order.vin} </label>
+            <label className='dataDetail'> VIN: {orderInfo.vin} </label>
           </div>
 
           <div className='dataContainer'>
             <label className='fontSize20'> Coupon </label>
-            <label className='dataDetail'> ID: {order.coupon_id} </label>
+            <label className='dataDetail'> ID: {orderInfo?.coupon_id || 'N/A'} </label>
           </div>
 
           <div className='dataContainer'>
             <label className='fontSize20'> Pick Up </label>
-            <label className='dataDetail'> Date: {order.pick_date} </label>
-            <label className='dataDetail'> Location: {order.pick_loc} </label>
-            <label className='dataDetail'> Start Odometer: {order.start_odo} </label>
+            <label className='dataDetail'> Date: {orderInfo.pick_date.slice(0, 10)} </label>
+            <label className='dataDetail'> Location: {orderInfo.pick_loc} </label>
+            <label className='dataDetail'> Start Odometer: {orderInfo.start_odo} </label>
           </div>
 
           <div className='dataContainer'>
             <label className='fontSize20'> Drop Off </label>
-            <label className='dataDetail'> Date: {order.drop_date}
-              
-            </label>
-            <label className='dataDetail'> Location: {order.drop_loc} </label>
-            <label className='dataDetail'> End Odometer: {order.end_odo} </label>
+            <label className='dataDetail'> Date: {orderInfo.drop_date.slice(0, 10)}</label>
+            <label className='dataDetail'> Location: {orderInfo.drop_loc} </label>
+            <label className='dataDetail'> End Odometer: {orderInfo.end_odo} </label>
           </div>
 
           <div className='dataContainer'>
             <label className='fontSize20'> Invoice </label>
-            <label className='dataDetail'> Date: {invoice?.inv_date || 'N/A'} </label>
-            <label className='dataDetail'> Amount: {invoice?.inv_amt || 'N/A'} </label>
+            <label className='dataDetail'> Date: {invoiceInfo?.inv_date.slice(0, 10) || 'N/A'} </label>
+            <label className='dataDetail'> Amount: ${invoiceInfo?.inv_amt || 'N/A'} </label>
           </div>
 
           <div className='dataContainer' id='paymentSection'>
             <label className='fontSize20'> Payment </label>
-            <label className='dataDetail'> Date: {payment?.pmt_date || 'N/A'} </label>
-            <label className='dataDetail'>Method: {payment?.pmt_method || 'N/A'} </label>
-            <label className='dataDetail'> Card: {payment?.card_num || 'N/A'} </label>
-            <label className='dataDetail'> Amount: {payment?.paid_amt || 'N/A'} </label>
+            <label className='dataDetail'> Date: {paymentInfo?.pmt_date.slice(0, 10) || 'N/A'} </label>
+            <label className='dataDetail'>Method: {paymentInfo?.pmt_method || 'N/A'} </label>
+            <label className='dataDetail'> Card: {paymentInfo?.card_num || 'N/A'} </label>
+            <label className='dataDetail'> Amount: ${paymentInfo?.paid_amt || 'N/A'} </label>
           </div>
           
         </div>
       </form>
     </div>
   )
+
+  useEffect(() => {
+    getOrderList();
+  }, []);
 
   return (
     <div>
@@ -215,10 +195,12 @@ const Orders = ({}) => {
             {/*<input type="text" name="orderID" placeholder='Search Order ID... ' onChange={(newValue) => {setSearchID(newValue)}}/>*/}
 
             <div className='datasearchResultSection'>
-              {orderInfo.map((info) =>{
-                return<button key={info.orderID} onClick={() => handleorderIDclick(info.orderID)}>
-                      {selected === info.orderID && <img src='/right.png' width={"16px"}></img>}
-                        <label>{info.orderID}</label>
+              {orderList
+              .sort((a, b) => a.rental_id - b.rental_id)
+              .map((info) =>{
+                return<button key={info.rental_id} onClick={() => handleorderIDclick(info.rental_id)}>
+                      {selected === info.rental_id && <img src='/right.png' width={"16px"}></img>}
+                        <label>{info.rental_id}</label>
                       </button>
               })}
             </div>

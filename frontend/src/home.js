@@ -8,7 +8,7 @@ import SearchResult from "./component/SearchResult.js";
 import axios from "axios";
 
 const Home = (props) => {
-    const { loggedIn, employee, email } = props
+    const { loggedIn, employee, email, fName, customerInfo } = props
     const navigate = useNavigate();
     const [name, setName] = useState("") // set temparary name
 
@@ -22,32 +22,43 @@ const Home = (props) => {
 
     const [carInfoList, setCarInfoList] = useState([])
     const [coupon_id, setCoupon_id] = useState("")
+    const [estimateMileage, setEstimateMileage] = useState("")
+    const [coupon_message, setCoupon_message] = useState("")
     const [couponInfo, setCouponInfo] = useState("")
+    const [location, setLocation] = useState([])
 
+    const [rental_id, setRental_id] = useState("")
+    const [invoiceInfo, setInvoiceInfo] = useState({
+        inv_id: '',
+        inv_date: '',
+        inv_amt: '',
+        rental_id: ''
+    })
+
+    const [payComplete, setPayomplete] = useState(false)
+
+    const [showInvoice, setShowInvoice] = useState(false)
+    const [showPayment, setShowPayment] = useState(false)
+
+    const [paymentMethod, setPaymentMethod] = useState("")
 
     const [isCheckOut, setIsCheckOut] = useState(false)
-    const [selectCar, setSelectCar] = useState("")
+    const [selectCar, setSelectCar] = useState({})
 
-    const [payment, setPayment] = useState({
-        paymentID: '',
-        pmt_date: '',
-        pmt_method: '',
-        start_odo: '',
-        car_num: '',
-        paid_amt: '',
-        invID: '',
-    });
-    
-    const location = [
-        { id: 1, name: 'New York' },
-        { id: 2, name: 'Boston' },
-        { id: 3, name: 'Chicago' },
-        { id: 4, name: 'Philadelphia' },
-        { id: 5, name: 'Pittsburgh' },
-        { id: 6, name: 'Columbus' },
-    ]
+    const [card_num, setCard_num] = useState("")
 
-    // ??
+    // get all location
+    const getlocationList = async () => {
+        try {
+          const results = await axios.get("http://localhost:3002/get_all_location")
+          setLocation(results.data);
+          //console.log(results);
+        } catch (err) {
+          console.log(err);
+        }
+    };
+
+    // get all vehicles
     const getCarInfoList = async () => {
         try {
           const results = await axios.get("http://localhost:3002/vehicles")
@@ -57,32 +68,104 @@ const Home = (props) => {
           console.log(err);
         }
     };
-    
-    // ??
-    const searchPaymentByCouponId = async (couponId) => {
+
+    // search car based on location
+    const getCarInfoListByLocation = async () => {
         try {
-            console.log('couponId: ' + couponId);
-            const results = await axios.post("http://localhost:3002/couponBy", { id: couponId });
-            setCouponInfo(results.data[0])
-            console.log(results.data[0]);
+            const results = await axios.post("http://localhost:3002/searchvehicle", { location: pickUpLocation.id });
+            setCarInfoList(results.data)
+            //console.log(results.data);
         } catch (err) {
             console.log(err);
         }
     };
 
-    // ???
-    const placeOrder = async (couponId) => {
+    // apply discount
+    const searchByCouponId = async (couponId) => {
         try {
-            console.log('couponId: ' + couponId);
-            const results = await axios.post("http://localhost:3002/couponBy", { id: couponId });
-            setCouponInfo(results.data[0])
-            console.log(results.data[0]);
+            const results = await axios.post("http://localhost:3002/applydiscount", { discount: couponId });
+            //console.log(results.data[0]);
+            if (results.data[0]){
+                setCouponInfo(results.data[0])
+                setCoupon_message("")
+            }
+            else
+                setCoupon_message("Wrong Coupon Code")
+            
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+
+    // get Invoice
+    const getInvoice = async (rental_id) => {
+        try {
+            console.log('rental_id: ' + rental_id);
+            const results = await axios.post("http://localhost:3002/invoice", { rental_id: 1 }); // ? need to be modify when database is done (rental_id)
+            //console.log(results.data[0]);
+            setInvoiceInfo(results.data[0])
+            
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    // place Order
+    const placeOrder = async () => {
+        try {
+            if (customerInfo == {}){
+                setCoupon_message("Please Login First!!!")
+                return
+            }
+
+            const results = await axios.post("http://localhost:3002/insert_order", { 
+                pick_date: pickUpDate, 
+                drop_date: dropOffDate, 
+                start_odo: selectCar.odo, 
+                end_odo: String(parseInt(selectCar.odo) + parseInt(estimateMileage)), 
+                pick_loc: pickUpLocation.id, 
+                drop_loc: dropOffLocaction.id, 
+                customer_id: customerInfo.customer_id,
+                vin: selectCar.vin
+            });
+
+            //console.log(results.data.insertId);
+            const insertID = results.data.insertId
+
+            setRental_id(insertID);
+
+
+            //console.log("rental_id: " + rental_id);
+            getInvoice(rental_id); 
+            setShowInvoice(true);
+
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+
+    // insert a payment
+    const pay = async () => {
+        try {
+            const results = await axios.post("http://localhost:3002/pay", { 
+                paymentMethod: paymentMethod, 
+                cardNumber: card_num, 
+                amount:invoiceInfo.inv_amt , 
+                invID: invoiceInfo.inv_id }); 
+
+            if (results.data == "pay sucessfully!"){
+                setPayomplete(true)
+            }
+            
         } catch (err) {
             console.log(err);
         }
     };
     
     useEffect(() => {
+        getlocationList();
     }, []);
     
     
@@ -113,25 +196,15 @@ const Home = (props) => {
     }
 
     const findButtonClick = () => {
-        getCarInfoList();
+        getCarInfoListByLocation();
     }
-
-    const handleSortByClick = (newValue) => {
-        setSortBy(newValue)
-        console.log(sortBy)
-    }
-
-    const handlePaymentInputChange = (e) => {
-        const { name, value } = e.target;
-        setPayment({ ...payment, [name]: value });
-      };
-      
-    const placeTheOrderClick = () => {
-        placeOrder()
-    }
-
+    
     const useCouponClick = () => {
-        searchPaymentByCouponId(coupon_id)
+        searchByCouponId(coupon_id)
+    }
+
+    const checkOutClick = () => {
+        setShowPayment(true);
     }
 
     return <div className="mainContainer">
@@ -155,7 +228,7 @@ const Home = (props) => {
 
             {(loggedIn && !employee && <div id="accountButtonSection">
                 <button id="accountButton">
-                    <label >Hi, {props.fName}</label>
+                    <label >Hi</label>
                     <img src='/account.png' width={"30px"}></img>
                 </button>
             </div>)}
@@ -166,8 +239,6 @@ const Home = (props) => {
                     <img src='/account.png' width={"30px"}></img>
                 </button>
             </div>)}
-
-
         </div>
 
         <div className="wowContainer">
@@ -259,33 +330,32 @@ const Home = (props) => {
 
             </div>}
 
-            {isCheckOut && <div className="searchSection">
-                <button className="backToSearchButton" onClick={() => setIsCheckOut(false)}>
-                    <img src='/left.png' width={"40px"}></img>
-                </button>
+            {isCheckOut && 
+                <div className="searchSection">
+                    <button className="backToSearchButton" onClick={() => setIsCheckOut(false)}>
+                        <img src='/left.png' width={"40px"}></img>
+                    </button>
 
-                <div className="checkoutSection">
-                    <img src={`/${selectCar.model}.png`} id="carImage"></img>
-                    
-                    <div className="checkOutInfoContainer">
-                        <label className="modelName">{selectCar.make} {selectCar.model}</label>
+                    <div className="checkoutSection">
+                        <img src={`/${selectCar.model}.png`} id="carImage"></img>
                         
-                        <label> 
-                            {pickUpLocation.name} {pickUpDate.toLocaleString('En', { month: 'short' })} {pickUpDate.getDate()} {pickUpDate.getFullYear()} {`${String(pickUpTime.getHours()).padStart(2, '0')}:${String(pickUpTime.getMinutes()).padStart(2, '0')}`}
-                            <img src={"/up_cal.png"} id="checkOutIcon"></img>
-                        </label>
-                        
-                        <label>
-                            {dropOffLocaction.name} {dropOffDate.toLocaleString('En', { month: 'short' })} {dropOffDate.getDate()} {dropOffDate.getFullYear()} {`${String(dropOffTime.getHours()).padStart(2, '0')}:${String(dropOffTime.getMinutes()).padStart(2, '0')}`}
-                            <img src={"/down_cal.png"} id="checkOutIcon"></img>
-                        </label>
-                    </div>
-
-                    
+                        <div className="checkOutInfoContainer">
+                            <label className="modelName">{selectCar.make} {selectCar.model} </label>
+                            
+                            <label> 
+                                {pickUpLocation.name} {pickUpDate.toLocaleString('En', { month: 'short' })} {pickUpDate.getDate()} {pickUpDate.getFullYear()} {`${String(pickUpTime.getHours()).padStart(2, '0')}:${String(pickUpTime.getMinutes()).padStart(2, '0')}`}
+                                <img src={"/up_cal.png"} id="checkOutIcon"></img>
+                            </label>
+                            
+                            <label>
+                                {dropOffLocaction.name} {dropOffDate.toLocaleString('En', { month: 'short' })} {dropOffDate.getDate()} {dropOffDate.getFullYear()} {`${String(dropOffTime.getHours()).padStart(2, '0')}:${String(dropOffTime.getMinutes()).padStart(2, '0')}`}
+                                <img src={"/down_cal.png"} id="checkOutIcon"></img>
+                            </label>
+                        </div>
                 </div>
 
                 <div className="checkoutSection">
-                    <label className="modelName">Total Cost</label>
+                    <label className="modelName">Cost</label>
                     
                     <div className="checkOutInfoContainer">
                         <br/>
@@ -294,53 +364,110 @@ const Home = (props) => {
                         </label>
 
                         <div className="checkOutForm">
-                            {couponInfo == '' &&  <label className='checkOutFormSubtitle'> Coupon: &nbsp;
+                            <label className='checkOutFormSubtitle'> Estimate mileage: &nbsp;
+                                {!showInvoice && <input type="text" value={estimateMileage} onChange={(event) => setEstimateMileage(event.target.value)}/>}
+                                {showInvoice && estimateMileage + "mile"}
+                            </label>
+
+                            {couponInfo == '' &&  <label className='checkOutFormSubtitle'> Coupon Code: &nbsp;
                                     <input type="text" value={coupon_id} onChange={(event) => setCoupon_id(event.target.value)}/>
                                 </label>
                             }
 
                             {couponInfo != '' &&  <label className='checkOutFormSubtitle'> Coupon: &nbsp;
-                                    {couponInfo.dis_per}% off = ${(((dropOffDate.getDate() - pickUpDate.getDate())) * selectCar.daily_rate).toFixed(2) * (1 - couponInfo.dis_per / 100)}
+                                    {couponInfo.dis_per}% off
                                 </label>
                             }
 
+                            <label className="errorLabel">{coupon_message}</label>
+                            {!showInvoice &&
+                                <div> 
+                                    {couponInfo == '' &&  <button  className='submitButton' onClick={useCouponClick}>
+                                            Use Coupon
+                                        </button> 
+                                    }
+                                    {couponInfo != '' &&  <button  className='submitButton' onClick={() => setCouponInfo('')}>
+                                            Reset Coupon
+                                        </button> 
+                                    }
+    
+                                    <button className='submitButton' onClick={placeOrder}>
+                                        Place this Order
+                                    </button> 
+                                </div>
+                            }
                            
-                            <button  className='submitButton' onClick={useCouponClick}>
-                                Use Coupon
-                            </button> 
+                            
+                               
+                            
                         </div>
                     </div>
                 </div>
 
-                <div className="checkoutSection">
-                    <label className="modelName">Payment</label>
+                {showInvoice && <div className="checkoutSection">
+                    <label className="modelName">Invoice</label>
 
                     <div className="checkOutInfoContainer">
                         <br/>
                         <div className="checkOutForm">
-                            <label className='checkOutFormSubtitle'> Card Number: &nbsp;
-                                <input type="text" name="card_num" onChange={handlePaymentInputChange}/>
-                            </label>
-
-                            <label className='checkOutFormSubtitle'> EXP Date: &nbsp;
-                                <input type="text"/>
-                            </label>
-
-                            <label className='checkOutFormSubtitle'> CVV: &nbsp;
-                                <input type="text"/>
-                            </label>
-
-                            <label className='checkOutFormSubtitle'> Name on Card: &nbsp;
-                                <input type="text"/>
-                            </label>
-                            <button className='submitButton' onClick={placeTheOrderClick}>
-                                Place this Order
-                            </button> 
+                            <label className='checkOutFormSubtitle'> Order Number: #{rental_id} </label>
+                            <label className='checkOutFormSubtitle'> Date: {invoiceInfo.inv_date.slice(0, 10)} </label>
+                            <label className='checkOutFormSubtitle'> Amount: ${invoiceInfo.inv_amt} </label>        
                         </div>
+                        {!showPayment &&
+                            <button className='submitButton' onClick={checkOutClick}>
+                                Check Out
+                            </button> 
+                        }
+                        
                     </div>
+                </div>}
+
+                {showPayment && <div className="checkoutSection">
+                    {!payComplete &&
+                    <>
+                    <label className="modelName">Payment</label>
 
                     
-                </div>
+                        <div className="checkOutInfoContainer">
+                            <br/>
+                            <div className="checkOutForm">
+                                    <>
+                                    <div className="signUpTypeButtonContainer">
+                                        <button onClick={() => setPaymentMethod("G")} className={paymentMethod == "G" ? "selectButtonI": "nonSelectButtonI"}> Gift Card </button>
+                                        <button onClick={() => setPaymentMethod("C")} className={paymentMethod == "C" ? "selectButtonC": "nonSelectButtonC"}> Credid Card </button>
+                                    </div>
+                                    <br />
+                                    <label className='checkOutFormSubtitle'> Card Number: &nbsp;
+                                        <input type="text" value={card_num} onChange={(event) => setCard_num(event.target.value)}/>
+                                    </label>
+
+                                    <label className='checkOutFormSubtitle'> EXP Date: &nbsp;
+                                        <input type="text"/>
+                                    </label>
+
+                                    <label className='checkOutFormSubtitle'> CVV: &nbsp;
+                                        <input type="text"/>
+                                    </label>
+
+                                    <label className='checkOutFormSubtitle'> Name on Card: &nbsp;
+                                        <input type="text"/>
+                                    </label>
+                                    
+                                    <button className='submitButton' onClick={pay}>
+                                        Pay
+                                    </button> 
+                                    </>
+                            </div>
+                        </div>
+                    </>}
+                    {payComplete &&
+                        <label id="thankLabel" > 
+                            <>Have a Good Ride!</>
+                            <img src='/car.png' width={"80px"}></img>
+                        </label>
+                    }
+                </div>}
             </div>}
         </div>
     </div>

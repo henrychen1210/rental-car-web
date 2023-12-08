@@ -34,14 +34,14 @@ const Login = (props) => {
             const results = await axios.post("http://localhost:3002/login", { email: email, password: password });
             //console.log(results.data);
 
-            if (results.data == "login sucessfully!") {
+            if (results.data[0]) {
                 setLoggedIn(true)
                 props.setEmail(email)
                 props.setLoggedIn(true)
-                props.setFName("Henry") /// henry!!!!
+                props.setCustomerInfo(results.data[0])
                 navigate("/")
             }
-            else  {
+            else if ( "Email or password is wrong" )  {
                 setPasswordError("Wrong Email or Password")
             }
         } catch (err) {
@@ -74,7 +74,6 @@ const Login = (props) => {
     }
         
     const onButtonClick = () => {
-
         
         // Set initial error values to empty
         setEmailError("")

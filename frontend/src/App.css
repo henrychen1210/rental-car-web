@@ -4,6 +4,7 @@
 body{
   font-family: 'Open Sans', sans-serif;
   background-color: #F9F9F9;
+  overflow-x: hidden;
 }
 
 input{
@@ -170,11 +171,12 @@ input:focus {
   width: 350px;
 }
 
-.inputContainer > .errorLabel {
+.inputContainer > .errorLabel, .checkOutForm > .errorLabel{
   color: #A44B22;
   font-size: 12px;
   height: 12px;
 }
+
 
 .inputBox {
   height: 35px;
@@ -1024,4 +1026,33 @@ input:focus {
 
 .nonSelectButtonC{
   border-radius: 0px 10px 10px 0px;
+}
+
+.customerDetailContainer {
+  width: 75%;
+  height: auto;
+  position: absolute;
+  top: 150px;
+  right: 100px;
+  color: #3C403F;
+}
+
+#thankLabel {
+  font-size: 50px;
+  width: 100%;
+  animation: 10s linear 1s infinite running slidein;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes slidein {
+  from {
+    /* starting styles */
+    transform: translateX(-150%);
+  }
+  to {
+    /* ending styles */
+    transform: translateX(150%);
+  }
 }

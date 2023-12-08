@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from 'react';
 import Order from './component/Orders.js'
 import Vehicles from './component/Vehicles.js'
-import Accounts from './component/Accounts.js'
+import Customers from './component/Customers.js'
+import Coupon from "./component/Coupon.js";
 
 const Manage = (props) => {
 
@@ -23,17 +24,12 @@ const Manage = (props) => {
     }
 
     const handleToAccountsClick = () => {
-        setSelected("accounts")
+        setSelected("customers")
     }
 
-
-    const orderInfo = [
-        {orderID: '10001', pick_date: '2023-12-01', drop_date: '2023-12-3', start_odo: '562014', end_odo: '927432', pick_loc: 'New York', drop_loc: 'Boston', customer_id: '99823', vin: 'JJJJJJ87621'},
-        {orderID: '10002', pick_date: '2023-12-01', drop_date: '2023-12-3', start_odo: '562014', end_odo: '927432', pick_loc: 'New York', drop_loc: 'Boston', customer_id: '99823', vin: 'JJJJJJ87621'},
-        {orderID: '10003', pick_date: '2023-12-01', drop_date: '2023-12-3', start_odo: '562014', end_odo: '927432', pick_loc: 'New York', drop_loc: 'Boston', customer_id: '99823', vin: 'JJJJJJ87621'},
-        {orderID: '10004', pick_date: '2023-12-01', drop_date: '2023-12-3', start_odo: '562014', end_odo: '927432', pick_loc: 'New York', drop_loc: 'Boston', customer_id: '99823', vin: 'JJJJJJ87621'},
-        {orderID: '10005', pick_date: '2023-12-01', drop_date: '2023-12-3', start_odo: '562014', end_odo: '927432', pick_loc: 'New York', drop_loc: 'Boston', customer_id: '99823', vin: 'JJJJJJ87621'}
-    ]
+    const handleToCouponClick = () => {
+        setSelected("coupon")
+    }
 
     return<div className="mainContainer">
         <div className="menuBarSection" id="maageMenu">
@@ -57,15 +53,20 @@ const Manage = (props) => {
                 <label>Vehicles</label>
             </button>
             <button onClick={handleToAccountsClick}>
-                {selected == "accounts" && <img src='/right.png' width={"20px"}></img> }
-                <label>Accounts</label>
+                {selected == "customers" && <img src='/right.png' width={"20px"}></img> }
+                <label>Customers</label>
+            </button>
+            <button onClick={handleToCouponClick}>
+                {selected == "coupon" && <img src='/right.png' width={"20px"}></img> }
+                <label>Coupon</label>
             </button>
         </div>
 
         <div className="databaseContainer">
             {selected == "orders" && <Order></Order>}
             {selected == "vehicles" && <Vehicles></Vehicles>}
-            {selected == "accounts" && <Accounts></Accounts>}
+            {selected == "customers" && <Customers></Customers>}
+            {selected == "coupon" && <Coupon></Coupon>}
         </div>
     </div>
 }

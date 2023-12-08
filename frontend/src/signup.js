@@ -64,46 +64,52 @@ const Signup = (props) => {
         })
     }
 
-    ///// ???
+    ///// indivual signup
     const individualSignUp = async () => {
         try {
-            const results = await axios.post("http://localhost:3002/login", { email: email, password: password });
+            const results = await axios.post("http://localhost:3002/register_individual", { 
+                email: email,
+                firstname: fname,
+                lastname: lname,
+                phonenumber: phone,
+                driverlicence: dr_lic,
+                insurance: insurance,
+                policy: policy,
+                password: password });
             //console.log(results.data);
 
-            if (results.data == "login sucessfully!") {
-                setLoggedIn(true)
-                props.setEmail(email)
-                props.setLoggedIn(true)
-                props.setFName("Henry") /// henry!!!!
-                navigate("/")
+            if (results.data == "register sucessfully!") {
+                navigate("/login")
             }
             else  {
-                setPasswordError("Wrong Email or Password")
+                setPasswordError("Individual sign up error")
             }
         } catch (err) {
-            setPasswordError("Wrong Email or Password")
+            setPasswordError("Individual sign up error")
             console.log(err);
         }
     }
 
-    /// ????
+    /// cor sign up
     const corprateSignUp= async () => {
         try {
-            const results = await axios.post("http://localhost:3002/login", { email: email, password: password });
+            const results = await axios.post("http://localhost:3002/register_corporate", { 
+                email: email,
+                phonenumber: phone,
+                corporate: corpName,
+                registration: corpNo,
+                empid: empID,
+                password: password });
             //console.log(results.data);
 
-            if (results.data == "login sucessfully!") {
-                setLoggedIn(true)
-                props.setEmail(email)
-                props.setLoggedIn(true)
-                props.setFName("Henry") /// henry!!!!
-                navigate("/")
+            if (results.data == "register sucessfully!") {
+                navigate("/login")
             }
             else  {
-                setPasswordError("Wrong Email or Password")
+                setPasswordError("Sing Up Error")
             }
         } catch (err) {
-            setPasswordError("Wrong Email or Password")
+            setPasswordError("Sing Up Error")
             console.log(err);
         }
     }
@@ -320,7 +326,7 @@ const Signup = (props) => {
                 <div id="signInputContainer">
                     <div className={"inputContainer"} style={{ gridColumn: '1 / 3' }}>
                         <input
-                            value={dr_lic}
+                            value={corpName}
                             placeholder="Corporate Name"
                             onChange={ev => setCorpName(ev.target.value)}
                             className={"inputBox"} />
@@ -328,7 +334,7 @@ const Signup = (props) => {
                     
                     <div className={"inputContainer"} style={{ gridColumn: '1 / 3' }}>
                         <input
-                            value={insurance}
+                            value={corpNo}
                             placeholder="Registration number"
                             onChange={ev => setCorpNo(ev.target.value)}
                             className={"inputBox"} />
@@ -336,7 +342,7 @@ const Signup = (props) => {
                     
                     <div className={"inputContainer"} style={{ gridColumn: '1 / 3' }}>
                         <input
-                            value={policy}
+                            value={empID}
                             placeholder="Employee ID"
                             onChange={ev => setEmpID(ev.target.value)}
                             className={"inputBox"} />
