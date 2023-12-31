@@ -13,6 +13,11 @@
 
 WOW is a growing car rental company transitioning to a centralized database system for streamlined operations, enhanced customer service, and improved decision-making.
 
+<p align="center">
+<img src="image/landing.jpg"/>
+</p>
+
+
 ## Approach
 
 - **Identified key entities:** Customer, Vehicle, Rental Service, Invoice, and Payment.
