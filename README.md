@@ -1,4 +1,4 @@
-# WOW (World on Wheels) - Centralized Database & Website Development
+# WOW (World on Wheels) - Website Development
 
 ## Contents
 
