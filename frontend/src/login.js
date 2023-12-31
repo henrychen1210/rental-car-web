@@ -53,15 +53,14 @@ const Login = (props) => {
     // Log in a employee using email and password ???
     const empLogIn = async () => {
         try {
-            const results = await axios.post("http://localhost:3002/login", { email: email, password: password });
-            //console.log(results.data);
+            const results = await axios.post("http://localhost:3002/emplogin", { email: email, password: password });
+            console.log(results.data);
 
             if (results.data == "login sucessfully!") {
                 setLoggedIn(true)
                 props.setEmail(email)
                 props.setLoggedIn(true)
-                props.setEsetEmployee(true)
-                props.setFName("Henry") /// henry!!!!
+                props.setEmployee(true)
                 navigate("/")
             }
             else  {

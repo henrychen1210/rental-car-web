@@ -498,6 +498,7 @@ input:focus {
   height: 55px;
   border-radius: 7px;
   border: none;
+  z-index: 1;
 }
 
 .findButton {
@@ -710,7 +711,8 @@ input:focus {
   position: absolute;
   background-color: white;
   height: 90%;
-  width: 200px;
+  width: 15%;
+  min-width: 150px;
   left: 0px;
   top: 80px;
   display: flex;
@@ -741,24 +743,25 @@ input:focus {
 
 .databaseContainer {
   position: absolute;
-  width: 1100px;
+  width: 85%;
   height: 670px;
   top: 120px;
-  left: 20%;
+  left: 15%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #fontSize {
   font-size: 40px;
-  position: absolute;
+  align-items: start;
 }
 
 .modifyDatabaseSection {
   background-color: #ffffff;
-  position: absolute;
-  width: 100%;
+  width: 1110px;
   height: 600px;
   top: 70px;
-  left: 0px;
   border-radius: 15px;
   padding: 10px;
   display: flex;
@@ -830,23 +833,23 @@ input:focus {
 .orderInfoContainer {
   width: 75%;
   height: 95%;
-  position: absolute;
-  top: 15px;
-  right: 15px;
   color: #3C403F;
+  padding: 0px 0px 20px 120px;
+  display: flex;
+  flex-direction: column;
 }
 
 .datatitle {
-  position: absolute;
-  top: 20px;
-  left: 0px;
   font-size: 25px;
+  align-items: start;
+  text-align: left;
+  margin-top: 50px;
 }
 
 .orderDetailContainer {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  margin-top: 130px;
+  margin-top: 70px;
   gap: 20px;
   justify-items: start;
   align-items: start;
@@ -976,21 +979,22 @@ input:focus {
 
 .checkOutFormSubtitle {
   color: #878787;
+  margin-top: 10px;
 }
 
 .vehicleInfoContainer {
   width: 50%;
   height: 80%;
-  position: absolute;
-  top: 50px;
-  right: 15px;
+  padding: 0px 0px 10px 100px;
   color: #3C403F;
+  display: flex;
+  flex-direction: column;
 }
 
 .vehicleDetailContainer {
   display: grid;
   grid-template-columns: 1fr;
-  margin-top: 130px;
+  margin-top: 80px;
   gap: 50px;
   justify-items: start;
   align-items: start;
@@ -1031,10 +1035,10 @@ input:focus {
 .customerDetailContainer {
   width: 75%;
   height: auto;
-  position: absolute;
   top: 150px;
   right: 100px;
   color: #3C403F;
+  margin-top: 70px;
 }
 
 #thankLabel {
@@ -1055,4 +1059,148 @@ input:focus {
     /* ending styles */
     transform: translateX(150%);
   }
+}
+
+
+.chat-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  border-radius: 30px;
+  background-color: none;
+  border: none;
+  color: none;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.chat-icon{
+  width: 60px;
+}
+
+.chat-box {
+  position: fixed;
+  width: 500px;
+  height: 700px;
+  bottom: 20px;
+  right: 20px;
+  background-color: #F8F8F8;
+  border-radius: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.chat-box-head {
+  background-color: #454543;
+  height: 50px;
+  border-top-right-radius: 15px;
+  border-top-left-radius: 15px;
+  
+}
+
+.chat-box-head span {
+  font-family: 'Rubik', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 25px;
+  font-weight: 500;
+  height: 50px;
+  margin: 0;
+}
+
+
+.close-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+  background-color: transparent; 
+  border: none; 
+  color: white;
+  font-size: 30px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  transition: transform 0.2s ease-in-out;
+}
+
+.chat-box-head img {
+  width: 30px;
+}
+
+.close-button:hover {
+  transform: scale(1.1);
+}
+
+.chat-form input[type="text"] {
+  position: fixed;
+  bottom: 30px;
+  right: 40px;
+  width: 450px;
+  height: 40px;
+  background-color: #454543; 
+  border-radius: 5px;
+  color: white;
+  border: none;
+  padding: 3px;
+  padding-left: 10px;
+  outline: none; 
+  font-size: 16px;
+}
+
+.chat-form button {
+  position: fixed;
+  bottom: 34px;
+  right: 53px;
+  width: 30px;
+  height: 30px;
+  background-color: transparent; 
+  color: white;
+  border: none;
+  outline: none; 
+  cursor: pointer;
+}
+
+.chat-send-icon {
+  width: 30px;
+  transition: transform 0.2s ease-in-out;
+}
+
+.chat-send-icon:hover {
+  transform: scale(1.1);
+}
+
+.chat-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  height: 570px;
+  overflow-y: auto;
+}
+
+
+.user-message {
+  align-self: flex-end;
+  background-color: #888884;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 15px 15px 0 15px;
+}
+
+
+.chatbot-message {
+  align-self: flex-start;
+  background-color: #f2f2f2;
+  padding: 8px 12px;
+  border-radius: 15px 15px 15px 0;
 }

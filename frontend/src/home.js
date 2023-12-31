@@ -6,11 +6,12 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import SortByCheckBox from './component/SortByCheckBox.js';
 import SearchResult from "./component/SearchResult.js";
 import axios from "axios";
+import ChatGPT from './component/ChatGPT';
 
 const Home = (props) => {
-    const { loggedIn, employee, email, fName, customerInfo } = props
+    const { loggedIn, employee, customerInfo } = props
     const navigate = useNavigate();
-    const [name, setName] = useState("") // set temparary name
+    const [name, setName] = useState("") // set temparary names
 
     const [pickUpLocation, setPickUpLocation] = useState("")
     const [pickUpDate, setPickUpDate] = useState("")
@@ -24,7 +25,11 @@ const Home = (props) => {
     const [coupon_id, setCoupon_id] = useState("")
     const [estimateMileage, setEstimateMileage] = useState("")
     const [coupon_message, setCoupon_message] = useState("")
-    const [couponInfo, setCouponInfo] = useState("")
+
+
+    const [couponInfo, setCouponInfo] = useState({
+        dis_per: ""
+    })
     const [location, setLocation] = useState([])
 
     const [rental_id, setRental_id] = useState("")
@@ -35,13 +40,15 @@ const Home = (props) => {
         rental_id: ''
     })
 
+    const [total_amount, setTotal_amount] = useState("")
+
     const [payComplete, setPayomplete] = useState(false)
 
     const [showInvoice, setShowInvoice] = useState(false)
     const [showPayment, setShowPayment] = useState(false)
 
     const [paymentMethod, setPaymentMethod] = useState("")
-
+    const [pay_message, setPay_message] = useState("")
     const [isCheckOut, setIsCheckOut] = useState(false)
     const [selectCar, setSelectCar] = useState({})
 
@@ -98,18 +105,6 @@ const Home = (props) => {
     };
 
 
-    // get Invoice
-    const getInvoice = async (rental_id) => {
-        try {
-            console.log('rental_id: ' + rental_id);
-            const results = await axios.post("http://localhost:3002/invoice", { rental_id: 1 }); // ? need to be modify when database is done (rental_id)
-            //console.log(results.data[0]);
-            setInvoiceInfo(results.data[0])
-            
-        } catch (err) {
-            console.log(err);
-        }
-    };
 
     // place Order
     const placeOrder = async () => {
@@ -118,6 +113,13 @@ const Home = (props) => {
                 setCoupon_message("Please Login First!!!")
                 return
             }
+
+            if (estimateMileage == "") {
+                setCoupon_message("Please input the estimated mileage!!!")
+                return
+            }
+
+            setCoupon_message("");
 
             const results = await axios.post("http://localhost:3002/insert_order", { 
                 pick_date: pickUpDate, 
@@ -133,13 +135,50 @@ const Home = (props) => {
             //console.log(results.data.insertId);
             const insertID = results.data.insertId
 
-            setRental_id(insertID);
+            let rental_id = insertID;
+            let total_amount = 0;
+            
+            if (parseInt(estimateMileage) > (selectCar.odo_limit * (dropOffDate.getDate() - pickUpDate.getDate()))) {
+                total_amount = (
+                    ((((dropOffDate.getDate() - pickUpDate.getDate())) * selectCar.daily_rate) + 
+                    (parseInt(estimateMileage) - (selectCar.odo_limit * (dropOffDate.getDate() - pickUpDate.getDate()))) * selectCar.over_mlg_fee) *
+                    (1 - couponInfo.dis_per / 100)
+                )
+            }
+            else {
+                total_amount = (
+                    (((dropOffDate.getDate() - pickUpDate.getDate())) * selectCar.daily_rate) *
+                    (1 - couponInfo.dis_per / 100)
+                )
+            }
 
-
+            //console.log(total_amount)
             //console.log("rental_id: " + rental_id);
-            getInvoice(rental_id); 
+            //console.log("total_amount: " + total_amount);
+            setRental_id(rental_id);
+            setTotal_amount(total_amount);
+
+            getInvoice(total_amount, rental_id); 
+
             setShowInvoice(true);
 
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    // get Invoice
+    const getInvoice = async (total_amount, rental_id) => {
+        try {
+            //console.log(total_amount, rental_id);
+            const results = await axios.post("http://localhost:3002/invoice", { inv_amt: total_amount, rental_id: rental_id }); // ? need to be modify when database is done (rental_id)
+            //console.log(results.data);
+            setInvoiceInfo({
+                inv_id: results.data.insertId,
+                inv_date: new Date(),
+                inv_amt: total_amount.toFixed(2),
+                rental_id: rental_id
+            })
         } catch (err) {
             console.log(err);
         }
@@ -149,10 +188,17 @@ const Home = (props) => {
     // insert a payment
     const pay = async () => {
         try {
+            if (paymentMethod === "") {
+                setPay_message("Please select the payment method");
+                return
+            }
+
+            setPay_message("");
+
             const results = await axios.post("http://localhost:3002/pay", { 
                 paymentMethod: paymentMethod, 
                 cardNumber: card_num, 
-                amount:invoiceInfo.inv_amt , 
+                amount: total_amount , 
                 invID: invoiceInfo.inv_id }); 
 
             if (results.data == "pay sucessfully!"){
@@ -163,9 +209,27 @@ const Home = (props) => {
             console.log(err);
         }
     };
+
+    // get corporate customer by id
+    const getAcountInfo_cor = async (customer_id) => {
+    try {
+        const results = await axios.post("http://localhost:3002/get_customer_cor", { customer_id: customer_id })
+        //console.log(results.data[0]);
+
+        const couponId = parseInt(results.data[0].coupon_id, 10); // Convert string to integer
+        setCoupon_id(couponId);
+        searchByCouponId(couponId);
+    } catch (err) {
+        console.log(err);
+    }
+    };
     
     useEffect(() => {
         getlocationList();
+
+        if (customerInfo.cu_type == "C") {
+            let c_id = getAcountInfo_cor(customerInfo.customer_id);
+        }
     }, []);
     
     
@@ -177,6 +241,13 @@ const Home = (props) => {
         } else {
             navigate("/login")
         }
+    }
+
+    const handleLogOut = () => {
+        props.setLoggedIn(false)
+        props.setEmployee(false)
+        props.setEmail("")
+        props.setCustomerInfo({})
     }
 
     const handleToHomeClick = () => {
@@ -227,8 +298,8 @@ const Home = (props) => {
             </div>)}
 
             {(loggedIn && !employee && <div id="accountButtonSection">
-                <button id="accountButton">
-                    <label >Hi</label>
+                <button id="accountButton" onClick={handleLogOut}>
+                    <label >Hi, #{customerInfo.customer_id}</label>
                     <img src='/account.png' width={"30px"}></img>
                 </button>
             </div>)}
@@ -364,17 +435,17 @@ const Home = (props) => {
                         </label>
 
                         <div className="checkOutForm">
-                            <label className='checkOutFormSubtitle'> Estimate mileage: &nbsp;
-                                {!showInvoice && <input type="text" value={estimateMileage} onChange={(event) => setEstimateMileage(event.target.value)}/>}
-                                {showInvoice && estimateMileage + "mile"}
+                            <label className='checkOutFormSubtitle'> Estimated mileage: &nbsp;
+                                {!showInvoice && <input type="text" value={estimateMileage} onChange={(event) => setEstimateMileage(event.target.value)} className={"inputBox"}/>}
+                                {showInvoice && estimateMileage + " mile"}
                             </label>
 
-                            {couponInfo == '' &&  <label className='checkOutFormSubtitle'> Coupon Code: &nbsp;
-                                    <input type="text" value={coupon_id} onChange={(event) => setCoupon_id(event.target.value)}/>
+                            {couponInfo.dis_per == '' &&  <label className='checkOutFormSubtitle'> Coupon Code: &nbsp;
+                                    <input type="text" value={coupon_id} onChange={(event) => setCoupon_id(event.target.value)} className={"inputBox"}/>
                                 </label>
                             }
 
-                            {couponInfo != '' &&  <label className='checkOutFormSubtitle'> Coupon: &nbsp;
+                            {couponInfo.dis_per != '' &&  <label className='checkOutFormSubtitle'> Coupon: &nbsp;
                                     {couponInfo.dis_per}% off
                                 </label>
                             }
@@ -382,11 +453,11 @@ const Home = (props) => {
                             <label className="errorLabel">{coupon_message}</label>
                             {!showInvoice &&
                                 <div> 
-                                    {couponInfo == '' &&  <button  className='submitButton' onClick={useCouponClick}>
+                                    {couponInfo.dis_per == '' &&  <button  className='submitButton' onClick={useCouponClick}>
                                             Use Coupon
                                         </button> 
                                     }
-                                    {couponInfo != '' &&  <button  className='submitButton' onClick={() => setCouponInfo('')}>
+                                    {couponInfo.dis_per != '' &&  <button  className='submitButton' onClick={() => setCouponInfo({dis_per: ''})}>
                                             Reset Coupon
                                         </button> 
                                     }
@@ -411,8 +482,8 @@ const Home = (props) => {
                         <br/>
                         <div className="checkOutForm">
                             <label className='checkOutFormSubtitle'> Order Number: #{rental_id} </label>
-                            <label className='checkOutFormSubtitle'> Date: {invoiceInfo.inv_date.slice(0, 10)} </label>
-                            <label className='checkOutFormSubtitle'> Amount: ${invoiceInfo.inv_amt} </label>        
+                            <label className='checkOutFormSubtitle'> Date: {new Date().toJSON().slice(0, 10)} </label>
+                            <label className='checkOutFormSubtitle'> Amount: ${total_amount.toFixed(2)} </label>        
                         </div>
                         {!showPayment &&
                             <button className='submitButton' onClick={checkOutClick}>
@@ -435,25 +506,27 @@ const Home = (props) => {
                                     <>
                                     <div className="signUpTypeButtonContainer">
                                         <button onClick={() => setPaymentMethod("G")} className={paymentMethod == "G" ? "selectButtonI": "nonSelectButtonI"}> Gift Card </button>
-                                        <button onClick={() => setPaymentMethod("C")} className={paymentMethod == "C" ? "selectButtonC": "nonSelectButtonC"}> Credid Card </button>
+                                        <button onClick={() => setPaymentMethod("C")} className={paymentMethod == "C" ? "selectButtonC": "nonSelectButtonC"}> Credit Card </button>
                                     </div>
                                     <br />
                                     <label className='checkOutFormSubtitle'> Card Number: &nbsp;
-                                        <input type="text" value={card_num} onChange={(event) => setCard_num(event.target.value)}/>
+                                        <input type="text" value={card_num} onChange={(event) => setCard_num(event.target.value)} className={"inputBox"}/>
                                     </label>
 
-                                    <label className='checkOutFormSubtitle'> EXP Date: &nbsp;
-                                        <input type="text"/>
+                                    <label className='checkOutFormSubtitle' > EXP Date: &nbsp;
+                                        <input type="text" className={"inputBox"}/>
                                     </label>
 
                                     <label className='checkOutFormSubtitle'> CVV: &nbsp;
-                                        <input type="text"/>
+                                        <input type="text" className={"inputBox"}/>
                                     </label>
 
                                     <label className='checkOutFormSubtitle'> Name on Card: &nbsp;
-                                        <input type="text"/>
+                                        <input type="text" className={"inputBox"}/>
                                     </label>
                                     
+                                    <label className="errorLabel">{pay_message}</label>
+
                                     <button className='submitButton' onClick={pay}>
                                         Pay
                                     </button> 
@@ -470,6 +543,7 @@ const Home = (props) => {
                 </div>}
             </div>}
         </div>
+        <ChatGPT />
     </div>
 }
 

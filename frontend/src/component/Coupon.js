@@ -31,7 +31,7 @@ const Coupon = ({carInfo}) => {
 
   const renderOrderDetail = () => (
     <div className='orderInfoContainer'>
-      <label className='datatitle'> Customer ID #{couponInfo.coupon_id}</label>
+      <label className='datatitle'> Coupon ID #{couponInfo.coupon_id}</label>
 
       <div className='customerDetailContainer'>
         <div className='dataContainer'>

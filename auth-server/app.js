@@ -73,6 +73,28 @@ app.post("/login", (req, res) => {
   });
 });
 
+// login
+app.post("/emplogin", (req, res) => {
+  const { email, password } = req.body;
+  const sql = "SELECT * FROM employee WHERE emp_id = ? AND emp_pwd = ?";
+  var params = [email, password];
+
+  connection.query(sql, params, function (err, result) {
+    if (err) {
+      console.log("[SELECT ERROR] - ", err.message);
+      res.send("Error emplogin");
+      return;
+    }
+
+    console.log(result);
+    if (result.length > 0) {
+      res.status(200).send("login sucessfully!");
+    } else {
+      res.status(500).send("Email or password is wrong");
+    }
+  });
+});
+
 // indivual signup
 app.post("/register_individual", (req, res) => {
     const {
@@ -137,7 +159,7 @@ app.post("/register_corporate", (req, res) => {
     "INSERT INTO customer (cu_email, cu_phone, cu_type, address_id, cu_password) VALUES (?, ?, ?, ?, ?)";
   const corporateQuery =
     "INSERT INTO corporate (customer_id, corp_name, co_reg, emp_id, coupon_ID) VALUES (?, ?, ?, ?, ?)";
-  const customerParams = [email, phonenumber, "C", 1, password];
+  const customerParams = [email, phonenumber, "C", 10, password];
   
   let customer_id = null;
 
@@ -483,16 +505,21 @@ app.post("/insert_order", (req, res) => {
 });
 
 
-// get invoice ??????
+// get invoice
 app.post("/invoice", (req, res) => {
-  const { rental_id } = req.body;
+  const { inv_amt, rental_id } = req.body;
+  const currentDate = new Date();
+  const formattedDate = currentDate.toISOString().split("T")[0];
 
-  var sql = `SELECT * FROM invoice WHERE rental_id = ?`;
-  var params = [rental_id];
+  var sql = `INSERT INTO invoice (inv_date, inv_amt, rental_id) 
+  VALUES ( STR_TO_DATE('${formattedDate}', '%Y-%m-%d'), ?, ?);`;
+  var params = [inv_amt, rental_id];
+
+
 
   connection.query(sql, params, function (err, result) {
     if (err) {
-      console.log("[SELECT ERROR] - ", err.message);
+      console.log("[INSERT ERROR] - ", err.message);
       res.status(500).send("Error invoice");
       return;
     }
@@ -508,17 +535,11 @@ app.post("/pay", (req, res) => {
   const currentDate = new Date();
   const formattedDate = currentDate.toISOString().split("T")[0];
 
-  var sql = `INSERT INTO payment (payment_id, pmt_Date, pmt_method, card_num, paid_amt, inv_id) 
-    VALUES (
-        (
-            SELECT * FROM (
-                SELECT MAX(payment_id) + 1 FROM payment
-            ) AS subquery
-        ),
-        STR_TO_DATE('${formattedDate}', '%Y-%m-%d'), 
-        ?,?,?,?
-    );`;
+  var sql = `INSERT INTO payment (pmt_Date, pmt_method, card_num, paid_amt, inv_id) 
+    VALUES (STR_TO_DATE('${formattedDate}', '%Y-%m-%d'),?,?,?,?);`;
   var params = [paymentMethod, cardNumber, amount, invID];
+
+  console.log(params)
 
   connection.query(sql, params, function (err, result) {
     if (err) {
