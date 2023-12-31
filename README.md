@@ -51,7 +51,5 @@ WOW is a growing car rental company transitioning to a centralized database syst
   <img src="image/home.png"/>
   <img src="image/login.png"/>
   <img src="image/sign up.png"/>
-  <img src="image/fee.png"/>
-  <img src="image/complete.png"/>
   <img src="image/manage.png"/>
 </p>
