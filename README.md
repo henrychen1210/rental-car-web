@@ -3,10 +3,10 @@
 ## Contents
 
 - <a href="#introduction">Introduction</a>
-- <a href="#approach">Database Setup</a>
-- <a href="#technology-stack">How to play</a>
-- <a href="#business-impact">Database Setup</a>
-- <a href="#security-measures">How to play</a>
+- <a href="#approach">Approach</a>
+- <a href="#technology-stack">Technology Stack</a>
+- <a href="#business-impact">Business Impact</a>
+- <a href="#security-measures">Security Measures</a>
 
 
 ## Introduction
