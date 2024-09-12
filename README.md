@@ -1,4 +1,4 @@
-# WOW (World on Wheels) - Website Development
+# Rental Car Platform for WOW (World on Wheels)
 
 ## Contents
 
