@@ -1,4 +1,4 @@
-# Rental Car Platform for WOW (World on Wheels)
+# Rental Car Platform - WOW (World on Wheels)
 
 ## Contents
 
